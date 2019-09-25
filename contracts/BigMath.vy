@@ -59,7 +59,7 @@ def bigDiv2x1(
 
   factor:uint256
 
-  factor = _den / MAX_BEFORE_SQUARE
+  factor = _den / MAX_BEFORE_SQUARE # round up seems to make no difference
 
   if(numMax >= _den):
     factor = min(factor, MAX_UINT/numMax)
