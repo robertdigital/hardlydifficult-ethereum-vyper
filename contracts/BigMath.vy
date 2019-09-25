@@ -78,7 +78,7 @@ def bigDiv2x1(
   if((MAX_UINT - 1) / value + 1 > numMin):
     return value * numMin / factor
   
-  if(value > numMin):
+  if(value >= numMin):
     return value / factor * numMin
 
   # then use the smaller value and the factor to scale back up
