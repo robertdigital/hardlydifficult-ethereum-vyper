@@ -59,11 +59,10 @@ def bigDiv2x1(
 
   factor:uint256
 
-  if(_den > numMin):
-    factor = _den / MAX_BEFORE_SQUARE
-    
-    if(numMax > _den):
-      factor = min(factor, (MAX_UINT-1)/numMax+1)
+  factor = _den / MAX_BEFORE_SQUARE
+
+  if(numMax > _den):
+    factor = min(factor, (MAX_UINT-1)/numMax+1)
   
   if(numMax/numMin < _den/numMax):
     factor = max(factor, (MAX_UINT - 1)/numMax+1)
