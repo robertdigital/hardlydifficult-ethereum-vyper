@@ -180,13 +180,16 @@ contract('bigDiv', () => {
           const bnRes = new BigNumber(numA).times(new BigNumber(numB)).div(new BigNumber(den));
 
           if (bnRes.lte(MAX_UINT256)) {
-            //  Only run test if the result fits into a uint256
-            it(`bigDiv2x1         ${numA} * ${numB} / ${den}`, async () => {
-              await check2x1(numA, numB, den, false);
-            });
-            // it(`bigDiv2x1 ROUNDUP ${numA} * ${numB} / ${den}`, async () => {
-            //   await check2x1(numA, numB, den, true);
-            // });
+            // TODO this is temp for faster testing
+            if (new BigNumber(numA).times(numB).gte(MAX_UINT256)) {
+              //  Only run test if the result fits into a uint256
+              it(`bigDiv2x1         ${numA} * ${numB} / ${den}`, async () => {
+                await check2x1(numA, numB, den, false);
+              });
+              // it(`bigDiv2x1 ROUNDUP ${numA} * ${numB} / ${den}`, async () => {
+              //   await check2x1(numA, numB, den, true);
+              // });
+            }
           }
         }
       }
