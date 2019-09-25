@@ -64,7 +64,7 @@ def bigDiv2x1(
   if(numMax >= _den):
     factor = min(factor, MAX_UINT/numMax)
   
-  if(numMax/numMin < _den/numMax):
+  elif(numMax/numMin < _den/numMax):
     factor = max(factor, (MAX_UINT - 1)/numMax + 1) # Round down overflows
 
   factor = max(2**32 - 1, factor)
