@@ -54,6 +54,7 @@ def bigDiv2x1(
     numMax = _numB
     numMin = _numA
   
+  # TODO zero in on a good value to compare against.  also -1 or not? <= or <?
   if(_den <= 2**32 - 1): # _den is small enough we don't need to factor
     return numMax / _den * numMin
 
