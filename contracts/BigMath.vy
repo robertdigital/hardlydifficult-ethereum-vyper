@@ -66,9 +66,8 @@ def bigDiv2x1(
   
   if(numMax/numMin < _den/numMax):
     factor = max(factor, (MAX_UINT - 1)/numMax+1)
-  factor = max(2**32 - 1, factor)
 
-  factor = min(factor, MAX_BEFORE_SQUARE)
+  factor = max(2**32 - 1, factor)
   
   # scale down the den 
   den: uint256 = (_den - 1) / factor + 1
