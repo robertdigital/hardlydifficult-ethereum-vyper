@@ -37,7 +37,7 @@ const numbers = [
   // MAX_BEFORE_SQUARE.div('10').dp(0),
   // MAX_BEFORE_SQUARE.div('10').dp(0).plus('1'),
   // MAX_BEFORE_SQUARE.div('2').dp(0).minus('1'),
-  // MAX_BEFORE_SQUARE.div('2').dp(0),
+  MAX_BEFORE_SQUARE.div('2').dp(0),
   // MAX_BEFORE_SQUARE.div('2').dp(0).plus('1'),
   MAX_BEFORE_SQUARE.minus('2'),
   MAX_BEFORE_SQUARE.minus('1'),
