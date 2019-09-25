@@ -13,7 +13,6 @@ const MAX_BEFORE_SQUARE = new BigNumber(
 );
 let maxError = new BigNumber(0);
 
-
 const numbers = [
   new BigNumber('0'),
   new BigNumber('1'),
@@ -99,7 +98,7 @@ const checkBounds = (expectedBN, resultBN, roundUp) => {
     maxVal;
   if (!expectedBN.eq(new BigNumber(0))) {
     const diffPct = new BigNumber(diff.toFixed()).div(expectedBN.toFixed());
-    if (expectedBN.gt('1000') && diffPct.gt(maxError)) {
+    if (expectedBN.gt('1000000') && diffPct.gt(maxError)) {
       maxError = diffPct;
     }
     // diffDesc = `(delta=${diffPct
