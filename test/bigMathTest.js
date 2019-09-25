@@ -99,7 +99,7 @@ const checkBounds = (expectedBN, resultBN, roundUp) => {
     maxVal;
   if (!expectedBN.eq(new BigNumber(0))) {
     const diffPct = new BigNumber(diff.toFixed()).div(expectedBN.toFixed());
-    if (diffPct.gt(maxError)) {
+    if (expectedBN.gt('1000') && diffPct.gt(maxError)) {
       maxError = diffPct;
     }
     // diffDesc = `(delta=${diffPct
