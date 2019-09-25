@@ -18,16 +18,17 @@
  *
  */
 
-const HDWalletProvider = require("truffle-hdwallet-provider");
+const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
-const fs = require("fs");
-const privateKeyOrMnemonic = fs.existsSync(".privateKey")
+const fs = require('fs');
+
+const privateKeyOrMnemonic = fs.existsSync('.privateKey')
   ? fs
-      .readFileSync(".privateKey")
-      .toString()
-      .trim()
-      .split(",")
+    .readFileSync('.privateKey')
+    .toString()
+    .trim()
+    .split(',')
   : undefined;
 
 module.exports = {
@@ -51,9 +52,9 @@ module.exports = {
     development: {
       // used for local dev
       gas: 6721974,
-      host: "127.0.0.1",
+      host: '127.0.0.1',
       port: 8545,
-      network_id: "*" // Match any network id
+      network_id: '*', // Match any network id
     },
 
     // Another network with more advanced options...
@@ -68,29 +69,27 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     rinkeby: {
-      provider: () =>
-        new HDWalletProvider(
-          privateKeyOrMnemonic,
-          `https://rinkeby.infura.io/v3/c13019f552f542188c0b0cdfaeb76cc4`
-        ),
-      network_id: "4", // Network Id for Rinkeby
+      provider: () => new HDWalletProvider(
+        privateKeyOrMnemonic,
+        'https://rinkeby.infura.io/v3/c13019f552f542188c0b0cdfaeb76cc4',
+      ),
+      network_id: '4', // Network Id for Rinkeby
       confirmations: 1,
       gas: 6400000,
       gasPrice: 5000000000, // 5GWEI
-      skipDryRun: true
+      skipDryRun: true,
     },
     ropsten: {
-      provider: () =>
-        new HDWalletProvider(
-          privateKeyOrMnemonic,
-          `https://ropsten.infura.io/v3/c13019f552f542188c0b0cdfaeb76cc4`
-        ),
-      network_id: "3", // Network Id for Ropsten
+      provider: () => new HDWalletProvider(
+        privateKeyOrMnemonic,
+        'https://ropsten.infura.io/v3/c13019f552f542188c0b0cdfaeb76cc4',
+      ),
+      network_id: '3', // Network Id for Ropsten
       confirmations: 1,
       gas: 6400000,
       gasPrice: 5000000000, // 5GWEI
-      skipDryRun: true
-    }
+      skipDryRun: true,
+    },
 
     // Useful for private networks
     // private: {
@@ -103,23 +102,23 @@ module.exports = {
   // Set default mocha options here, use special reporters etc.
   mocha: {
     // timeout: 100000,
-    enableTimeouts: false
-    //reporter: "eth-gas-reporter" (breaking deploy script and very slow)
+    enableTimeouts: false,
+    // reporter: "eth-gas-reporter" (breaking deploy script and very slow)
   },
 
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.5.10", // Fetch exact version from solc-bin (default: truffle's version)
+      version: '0.5.10', // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       settings: {
         // See the solidity docs for advice about optimization and evmVersion
         optimizer: {
           enabled: true,
-          runs: 200
-        }
+          runs: 200,
+        },
         //  evmVersion: "byzantium"
-      }
-    }
-  }
+      },
+    },
+  },
 };

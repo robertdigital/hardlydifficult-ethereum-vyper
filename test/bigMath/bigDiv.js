@@ -1,8 +1,9 @@
-const BigNumber = require("bignumber.js");
-const bigMathArtifact = artifacts.require("BigMath");
-const truffleAssertions = require('truffle-assertions')
+const BigNumber = require('bignumber.js');
 
-contract("bigMath / bigDiv", accounts => {
+const bigMathArtifact = artifacts.require('BigMath');
+const truffleAssertions = require('truffle-assertions');
+
+contract('bigMath / bigDiv', () => {
   let contract;
   const maxValue = new BigNumber(2).pow(256).minus(1);
 
@@ -10,12 +11,12 @@ contract("bigMath / bigDiv", accounts => {
     contract = await bigMathArtifact.new();
   });
 
-  it("2x1 random math works", async () => {
+  it('2x1 random math works', async () => {
     for (let i = 0; i < 999; i++) {
       const numA = new BigNumber(Math.random()).times(maxValue).dp(0);
       const numB = new BigNumber(Math.random()).times(maxValue).dp(0);
       const den = new BigNumber(Math.random()).times(maxValue).dp(0);
-      //console.log(`${numA.toFixed()}*${numB.toFixed()}/${den.toFixed()}`);
+      // console.log(`${numA.toFixed()}*${numB.toFixed()}/${den.toFixed()}`);
       const expected = numA
         .times(numB)
         .div(den)
@@ -25,7 +26,7 @@ contract("bigMath / bigDiv", accounts => {
           numA.toFixed(),
           numB.toFixed(),
           den.toFixed(),
-          false
+          false,
         );
         if (expected.gt(0)) {
           const delta = expected.minus(result);
@@ -45,14 +46,14 @@ contract("bigMath / bigDiv", accounts => {
             numA.toFixed(),
             numB.toFixed(),
             den.toFixed(),
-            false
-          )
+            false,
+          ),
         );
       }
     }
   });
 
-  it("2x2 random math works", async () => {
+  it('2x2 random math works', async () => {
     for (let i = 0; i < 999; i++) {
       const numA = new BigNumber(Math.random()).times(maxValue).dp(0);
       const numB = new BigNumber(Math.random()).times(maxValue).dp(0);
@@ -70,7 +71,7 @@ contract("bigMath / bigDiv", accounts => {
           numA.toFixed(),
           numB.toFixed(),
           denA.toFixed(),
-          denB.toFixed()
+          denB.toFixed(),
         );
         if (expected.gt(0)) {
           const delta = expected.minus(result);
@@ -90,14 +91,14 @@ contract("bigMath / bigDiv", accounts => {
             numA.toFixed(),
             numB.toFixed(),
             denA.toFixed(),
-            denB.toFixed()
-          )
+            denB.toFixed(),
+          ),
         );
       }
     }
   });
 
-  it("2x1 does not overflow with sqrt max value", async () => {
+  it('2x1 does not overflow with sqrt max value', async () => {
     const sqrtMax = maxValue.sqrt().dp(0);
     await contract.bigDiv2x1(sqrtMax.toFixed(), 1, 1, false);
     await contract.bigDiv2x1(1, sqrtMax.toFixed(), 1, false);
@@ -106,17 +107,17 @@ contract("bigMath / bigDiv", accounts => {
       sqrtMax.toFixed(),
       sqrtMax.minus(1).toFixed(),
       1,
-      false
+      false,
     );
     await contract.bigDiv2x1(
       sqrtMax.toFixed(),
       sqrtMax.minus(1).toFixed(),
       sqrtMax.toFixed(),
-      false
+      false,
     );
   });
 
-  it("2x1 does not overflow with half max value", async () => {
+  it('2x1 does not overflow with half max value', async () => {
     await contract.bigDiv2x1(
       maxValue
         .div(2)
@@ -124,7 +125,7 @@ contract("bigMath / bigDiv", accounts => {
         .toFixed(),
       1,
       1,
-      true
+      true,
     );
     await contract.bigDiv2x1(
       1,
@@ -133,7 +134,7 @@ contract("bigMath / bigDiv", accounts => {
         .dp(0)
         .toFixed(),
       1,
-      true
+      true,
     );
     await contract.bigDiv2x1(
       1,
@@ -142,7 +143,7 @@ contract("bigMath / bigDiv", accounts => {
         .div(2)
         .dp(0)
         .toFixed(),
-      true
+      true,
     );
     await contract.bigDiv2x1(
       maxValue
@@ -157,18 +158,18 @@ contract("bigMath / bigDiv", accounts => {
         .div(2)
         .dp(0)
         .toFixed(),
-      true
+      true,
     );
   });
 
-  it("2x1 does not overflow with max value", async () => {
+  it('2x1 does not overflow with max value', async () => {
     await contract.bigDiv2x1(maxValue.toFixed(), 1, 1, false);
     await contract.bigDiv2x1(1, maxValue.toFixed(), 1, false);
     await contract.bigDiv2x1(1, 1, maxValue.toFixed(), false);
     await contract.bigDiv2x1(maxValue.toFixed(), 1, maxValue.toFixed(), false);
   });
 
-  it("2x2 does not overflow with sqrt max value", async () => {
+  it('2x2 does not overflow with sqrt max value', async () => {
     const sqrtMax = maxValue.sqrt().dp(0);
     await contract.bigDiv2x2(sqrtMax.toFixed(), 1, 1, 1);
     await contract.bigDiv2x2(1, sqrtMax.toFixed(), 1, 1);
@@ -178,17 +179,17 @@ contract("bigMath / bigDiv", accounts => {
       sqrtMax.toFixed(),
       sqrtMax.minus(1).toFixed(),
       1,
-      1
+      1,
     );
     await contract.bigDiv2x2(
       sqrtMax.toFixed(),
       sqrtMax.minus(1).toFixed(),
       sqrtMax.toFixed(),
-      sqrtMax.minus(1).toFixed()
+      sqrtMax.minus(1).toFixed(),
     );
   });
 
-  it("2x2 does not overflow with half max value", async () => {
+  it('2x2 does not overflow with half max value', async () => {
     await contract.bigDiv2x2(
       maxValue
         .div(2)
@@ -196,7 +197,7 @@ contract("bigMath / bigDiv", accounts => {
         .toFixed(),
       1,
       1,
-      1
+      1,
     );
     await contract.bigDiv2x2(
       1,
@@ -205,7 +206,7 @@ contract("bigMath / bigDiv", accounts => {
         .dp(0)
         .toFixed(),
       1,
-      1
+      1,
     );
     await contract.bigDiv2x2(
       1,
@@ -214,7 +215,7 @@ contract("bigMath / bigDiv", accounts => {
         .div(2)
         .dp(0)
         .toFixed(),
-      1
+      1,
     );
     await contract.bigDiv2x2(
       1,
@@ -223,7 +224,7 @@ contract("bigMath / bigDiv", accounts => {
       maxValue
         .div(2)
         .dp(0)
-        .toFixed()
+        .toFixed(),
     );
     await contract.bigDiv2x2(
       maxValue
@@ -241,46 +242,46 @@ contract("bigMath / bigDiv", accounts => {
       maxValue
         .div(2)
         .dp(0)
-        .toFixed()
+        .toFixed(),
     );
   });
 
-  it("2x2 does not overflow with max value", async () => {
+  it('2x2 does not overflow with max value', async () => {
     await contract.bigDiv2x2(maxValue.toFixed(), 1, 1, 1);
     await contract.bigDiv2x2(maxValue.toFixed(), 1, maxValue.toFixed(), 1);
     await contract.bigDiv2x2(
       maxValue.toFixed(),
       maxValue.toFixed(),
       maxValue.toFixed(),
-      1
+      1,
     );
     await contract.bigDiv2x2(
       maxValue.toFixed(),
       maxValue.toFixed(),
       1,
-      maxValue.toFixed()
+      maxValue.toFixed(),
     );
     await contract.bigDiv2x2(1, maxValue.toFixed(), 1, 1);
     await contract.bigDiv2x2(1, 1, maxValue.toFixed(), 1);
     await contract.bigDiv2x2(1, 1, 1, maxValue.toFixed());
   });
 
-  it("MythX detected possible overflow case 1", async () => {
+  it('MythX detected possible overflow case 1', async () => {
     const result = await contract.bigDiv2x2(
-      "0x0000000000000000000000000000000000000000000000000000000000000002",
-      "0x0000000000000000000000000000000000000000000000000000000000001700",
-      "0x0000003800000000000000000000000000000000000000000000000000000000",
-      "0x0000fb0000000000000000000000000000000000000000000000000000000000"
+      '0x0000000000000000000000000000000000000000000000000000000000000002',
+      '0x0000000000000000000000000000000000000000000000000000000000001700',
+      '0x0000003800000000000000000000000000000000000000000000000000000000',
+      '0x0000fb0000000000000000000000000000000000000000000000000000000000',
     );
     assert.equal(result, 0);
   });
 
-  it("MythX detected possible overflow case 2", async () => {
+  it('MythX detected possible overflow case 2', async () => {
     const result = await contract.bigDiv2x2(
-      "2",
-      "5888",
-      "1509757013360435828501352844873099317723680087662272058941802173956096",
-      "1732338333044431510646123721431533388565228352014767025345793580173623296"
+      '2',
+      '5888',
+      '1509757013360435828501352844873099317723680087662272058941802173956096',
+      '1732338333044431510646123721431533388565228352014767025345793580173623296',
     );
     assert.equal(result, 0);
   });
