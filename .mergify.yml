@@ -79,6 +79,7 @@ pull_request_rules:
   - name: auto-merge
     conditions:
       - label=auto-merge
+      - "status-success=test"
       - "#changes-requested-reviews-by=0"
       - "#status-neutral=0"
       - "#status-failure=0"
