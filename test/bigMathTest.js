@@ -4,7 +4,7 @@
 const BigMath = artifacts.require('BigMath');
 const BigNumber = require('bignumber.js');
 
-const MAX_DELTA_RATIO_FROM_EXPECTED = 0.001; // doubled to 0.1%
+const MAX_DELTA_RATIO_FROM_EXPECTED = 0.005; // TODO try to lower this value
 const MAX_UINT256 = new BigNumber(
   '115792089237316195423570985008687907853269984665640564039457584007913129639935',
 );
@@ -110,7 +110,7 @@ const numbers = [
   MAX_UINT256,
 ];
 
-// Checks that the difference is no greater than max(1, 0.1% of expectation)
+// Checks that the difference is no greater than max(1, MAX_DELTA_RATIO_FROM_EXPECTED of expectation)
 const checkBounds = (expectedBN, resultBN, roundUp) => {
   const diff = expectedBN.minus(resultBN);
 
