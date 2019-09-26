@@ -42,7 +42,10 @@ def bigDiv2x1(
   if(_numA == 0 or _numB == 0): # would underflow if we don't special case 0
     return 0
   if((MAX_UINT - 1) / _numA + 1 > _numB): # a*b does not overflow, return exact math
-    return _numA * _numB / _den
+    if(_roundUp):
+      return (_numA * _numB - 1) / _den + 1
+    else:
+      return _numA * _numB / _den
   
   # Sort numerators
   numMax: uint256
