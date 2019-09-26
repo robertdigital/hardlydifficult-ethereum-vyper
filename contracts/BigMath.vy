@@ -75,7 +75,7 @@ def bigDiv2x1(
     return value * numMin / factor
   if(value >= numMin): # start with the larger value to minimize rounding
     return value / factor * numMin
-  return value * (numMin / factor)
+  return numMin / factor * value
 
 @public
 @constant
