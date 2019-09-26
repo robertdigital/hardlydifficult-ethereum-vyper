@@ -52,7 +52,7 @@ def bigDiv2x1(
     numMin = _numA
   
   # TODO zero in on a good value to compare against.  also -1 or not? <= or <?
-  if(_den < 2**16): # _den is small enough we don't need to factor. 2^32 was working, testing smaller
+  if(_den < 2**32): # _den is small enough we don't need to factor. 2^16 is too small
     return numMax / _den * numMin
 
   # calculate the factor to scale interm values by
