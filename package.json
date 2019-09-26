@@ -16,7 +16,7 @@
     "big.js": "5.2.2",
     "bignumber.js": "9.0.0",
     "openzeppelin-test-helpers": "0.4.3",
-    "papaparse": "5.0.2",
+    "papaparse": "5.1.0",
     "sleep": "6.1.0",
     "truffle": "5.0.37",
     "truffle-assertions": "0.9.1",
