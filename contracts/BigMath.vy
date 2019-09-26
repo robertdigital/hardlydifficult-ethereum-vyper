@@ -62,6 +62,8 @@ def bigDiv2x1(
   elif(numMax/numMin < _den/numMax): # TODO > or >=? Round up has no impact it seems
     factor = max(factor, (MAX_UINT - 1)/numMax + 1) # Round down overflows
   # TODO is 2^32 - 1 a good value to use here?
+  # 2^16 - 2^64 works.  2^128 is too large.
+  # 0 causes rounding down. same for 2^128
   factor = max(2**32 - 1, factor) # TODO is this just for the else condition?
   
   # scale down the den 
