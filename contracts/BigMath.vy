@@ -59,7 +59,7 @@ def bigDiv2x1(
   factor:uint256 = _den / MAX_BEFORE_SQUARE # round up seems to make no difference
   if(numMax >= _den): # TODO is > or >= better here?
     factor = min(factor, (MAX_UINT - 1)/numMax + 1) # Round down is okay, is round up better?
-  elif(numMax/numMin < (_den - 1)/numMax + 1): # TODO > or >=?.  Round up?
+  elif(numMax/numMin < _den/numMax): # TODO > or >=? Round up has no impact it seems
     factor = max(factor, (MAX_UINT - 1)/numMax + 1) # Round down overflows
   # TODO is 2^32 - 1 a good value to use here?
   factor = max(2**32 - 1, factor) # TODO is this just for the else condition?
