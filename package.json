@@ -13,13 +13,13 @@
     "url": "git@github.com:HardlyDifficult/hardlydifficult-ethereum-vyper.git"
   },
   "dependencies": {
-    "big.js": "^5.2.2",
+    "big.js": "5.2.2",
     "bignumber.js": "9.0.0",
     "openzeppelin-test-helpers": "0.4.3",
     "papaparse": "5.0.2",
     "sleep": "6.1.0",
     "truffle": "5.0.35",
-    "truffle-assertions": "^0.9.1",
+    "truffle-assertions": "0.9.1",
     "truffle-hdwallet-provider": "1.0.17",
     "truffle-require": "2.0.19"
   },
