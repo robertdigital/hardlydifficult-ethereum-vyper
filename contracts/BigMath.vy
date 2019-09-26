@@ -58,17 +58,14 @@ def bigDiv2x1(
   if(_den <= 2**32 - 1): # _den is small enough we don't need to factor
     return numMax / _den * numMin
 
-  factor:uint256
-
-  factor = _den / MAX_BEFORE_SQUARE # round up seems to make no difference
-
-  if(numMax >= _den):
+  # calculate the factor to scale interm values by
+  factor:uint256 = _den / MAX_BEFORE_SQUARE # round up seems to make no difference
+  if(numMax >= _den): # TODO is > or >= better here?
     factor = min(factor, MAX_UINT/numMax)
-  
-  elif(numMax/numMin < _den/numMax):
+  elif(numMax/numMin < _den/numMax): # TODO > or >=?
     factor = max(factor, (MAX_UINT - 1)/numMax + 1) # Round down overflows
-
-  factor = max(2**32 - 1, factor)
+  # TODO is 2^32 - 1 a good value to use here?
+  factor = max(2**32 - 1, factor) # TODO is this just for the else condition?
   
   # scale down the den 
   den: uint256 = (_den - 1) / factor + 1
