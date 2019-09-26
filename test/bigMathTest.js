@@ -34,7 +34,7 @@ const numbers = [
   // MAX_UINT32.div('2').dp(0),
   // MAX_UINT32.div('2').dp(0).plus('1'),
   // MAX_UINT32.minus('1'),
-  // MAX_UINT32,
+  MAX_UINT32,
   // MAX_UINT32.plus('1'),
   // MAX_UINT32.times('2').minus('1'),
   // MAX_UINT32.times('2'),
