@@ -65,6 +65,7 @@ def bigDiv2x1(
   # 2^16 - 2^64 works.  2^128 is too large.
   # 0 causes rounding down. same for 2^128
   factor = max(2**32 - 1, factor) # TODO is this just for the else condition?
+  factor = min(factor, min(_den, numMin))
   
   # scale down the den 
   den: uint256 = (_den - 1) / factor + 1
