@@ -66,6 +66,7 @@ const numbers = [
   MAX_UINT128.minus('1'),
   MAX_UINT128,
   MAX_UINT128.plus('1'),
+  MAX_UINT128.plus('2'),
   // MAX_UINT128.times('2').minus('1'),
   // MAX_UINT128.times('2'),
   // MAX_UINT128.times('2').plus('1'),
