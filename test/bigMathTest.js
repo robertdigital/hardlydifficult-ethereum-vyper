@@ -133,7 +133,7 @@ const numbers = [
   MAX_UINT256,
 ];
 
-// Checks that the difference is no greater than max(1, MAX_DELTA_RATIO_FROM_EXPECTED of expectation)
+// Checks that the difference is no greater than max(1, MAX_DELTA of expectation)
 const checkBounds = (expectedBN, resultBN, roundUp) => {
   const diff = expectedBN.minus(resultBN);
 

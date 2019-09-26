@@ -1,8 +1,6 @@
-const HDWalletProvider = require('truffle-hdwallet-provider');
-
 module.exports = {
   mocha: {
-    enableTimeouts: false
+    enableTimeouts: false,
   },
   compilers: {
     solc: {
