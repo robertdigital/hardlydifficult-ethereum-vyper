@@ -4,7 +4,7 @@
 const BigMath = artifacts.require('BigMath');
 const BigNumber = require('bignumber.js');
 
-const MAX_DELTA_RATIO_FROM_EXPECTED = 0.00001; // TODO try to lower this value
+const MAX_DELTA_RATIO_FROM_EXPECTED = 0.0001; // Goal is 0.01% accurate or better
 const MAX_UINT256 = new BigNumber(
   '115792089237316195423570985008687907853269984665640564039457584007913129639935',
 );
@@ -156,11 +156,8 @@ contract('bigDiv', () => {
   });
 
   after(async () => {
-    const expected = '0.00009910802775024777';
-    assert(maxError.lte(expected), `maxError increased to ${maxError.toFixed()}`);
-    if (maxError.lt(expected)) {
-      console.log(`maxError decreased to ${maxError.toFixed()}`);
-    }
+    assert(maxError.lte(MAX_DELTA_RATIO_FROM_EXPECTED), `maxError increased to ${maxError.toFixed()}`);
+    console.log(`maxError ${maxError.times(100).toFormat(4)}%`);
   });
 
   const check2x1 = async (numA, numB, den, roundUp) => {
