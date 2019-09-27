@@ -3,5 +3,5 @@
     "config:base"
   ],
   "timezone": "America/Los_Angeles",
-  "schedule": ["after 4am and before 6am every weekday"]
+  "schedule": ["after 4am and before 6am on monday"]
 }
