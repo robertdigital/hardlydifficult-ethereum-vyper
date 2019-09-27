@@ -74,6 +74,12 @@ def bigDiv2x1(
   # scale down the den 
   den: uint256 = (_den - 1) / factor + 1
 
+  factorDiv: uint256
+  if(_den >= MAX_BEFORE_SQUARE):
+    factorDiv = ((_den - 1) / numMax + 1) * ((MAX_BEFORE_SQUARE - 1) / numMin + 1)
+  else:
+    factorDiv = ((MAX_BEFORE_SQUARE-1) / numMax+1) * ((_den-1) / numMin+1)
+
   factorMul: uint256 = ((numMin - 1) / (MAX_BEFORE_SQUARE-1)+1)
   if((MAX_UINT - 1) / factorMul + 1 > ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)):
     factorMul *= ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)
