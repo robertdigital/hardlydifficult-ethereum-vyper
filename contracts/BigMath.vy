@@ -55,11 +55,11 @@ def bigDiv2x1(
   if(numMax / _den > 2**16): # _den is small enough we don't need to factor
     return numMax / _den * numMin
 
-  factorDiv: uint256
-  if(_den >= MAX_BEFORE_SQUARE):
-    factorDiv = ((_den - 1) / numMax + 1) * ((MAX_BEFORE_SQUARE - 1) / numMin + 1)
+  factorDiv: uint256 = ((MAX_UINT - 1) / numMax + 1)
+  if((MAX_UINT - 1) / factorDiv + 1 > ((_den - 1) / numMin + 1)):
+    factorDiv *= ((_den - 1) / numMin + 1)
   else:
-    factorDiv = ((MAX_BEFORE_SQUARE-1) / numMax+1) * ((_den-1) / numMin+1)
+    factorDiv = MAX_UINT
 
   factorMul: uint256 = ((numMin - 1) / (MAX_BEFORE_SQUARE-1)+1)
   if((MAX_UINT - 1) / factorMul + 1 > ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)):
