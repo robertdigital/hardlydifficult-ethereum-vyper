@@ -19,14 +19,6 @@ pull_request_rules:
       label:
         add: ["auto-merge"]
 
-  - name: stop on label
-    conditions:
-      - label=auto-merge
-      - label=manual-merge
-    actions:
-      label:
-        remove: ["auto-merge"]
-
   - name: auto-merge
     conditions:
       - label=auto-merge
@@ -34,6 +26,23 @@ pull_request_rules:
       - "#changes-requested-reviews-by=0"
       - "#status-neutral=0"
       - "#status-failure=0"
+      - "#assignee=0"
+      - -conflict
+    actions:
+      merge:
+        method: squash
+        strict: false
+      delete_head_branch: {}
+
+  - name: strict-merge
+    conditions:
+      - label=strict-merge
+      - "status-success=ci/circleci: test"
+      - "#changes-requested-reviews-by=0"
+      - "#status-neutral=0"
+      - "#status-failure=0"
+      - "#assignee=0"
+      - -conflict
     actions:
       merge:
         method: squash
