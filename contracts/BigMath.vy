@@ -90,6 +90,9 @@ def bigDiv2x1(
   if((MAX_UINT - 1) / value + 1 > numMin): # value * numMin won't overflow
     return value * numMin / factor
   if(value >= numMin): # start with the larger value to minimize rounding
+    factor = (MAX_UINT - 1) / numMax + 1
+    factor *= _den
+    value = numMax / ((_den - 1) / factor + 1)
     return value / factor * numMin
   return numMin / factor * value
 
