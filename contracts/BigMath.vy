@@ -51,8 +51,8 @@ def bigDiv2x1(
     numMax = _numB
     numMin = _numA
 
-  # TODO zero in on a good value to compare against
-  if(numMax / _den > 2**16): # _den is small enough we don't need to factor
+  if(numMax / _den > 10000):
+    # _den is small enough to be 0.01% accurate or better w/o a factor
     return numMax / _den * numMin
 
   factorDiv: uint256 = ((MAX_UINT - 1) / numMax + 1)
