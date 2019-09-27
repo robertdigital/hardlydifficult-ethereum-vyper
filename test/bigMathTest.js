@@ -156,7 +156,11 @@ contract('bigDiv', () => {
   });
 
   after(async () => {
-    console.log(maxError.toFixed());
+    const expected = '0.00049603125880946604';
+    assert(maxError.lte(expected), `maxError increased to ${maxError.toFixed()}`);
+    if (maxError.lt(expected)) {
+      console.log(`maxError decreased to ${maxError.toFixed()}`);
+    }
   });
 
   const check2x1 = async (numA, numB, den, roundUp) => {
