@@ -51,6 +51,18 @@ def bigDiv2x1(
     numMax = _numB
     numMin = _numA
   
+  factorDiv: uint256
+  if(_den >= MAX_BEFORE_SQUARE):
+    factorDiv = ((_den - 1) / numMax + 1) * ((MAX_BEFORE_SQUARE - 1) / numMin + 1)
+  else:
+    factorDiv = ((MAX_BEFORE_SQUARE-1) / numMax+1) * ((_den-1) / numMin+1)
+
+  factorMul: uint256 = ((numMin - 1) / (MAX_BEFORE_SQUARE-1)+1)
+  if((MAX_UINT - 1) / factorMul + 1 > ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)):
+    factorMul *= ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)
+    if(factorMul <= factorDiv):
+      return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
+
   # TODO zero in on a good value to compare against.  also -1 or not? <= or <?
   if(numMax / _den > 2**16): # _den is small enough we don't need to factor
     return numMax / _den * numMin
@@ -73,19 +85,6 @@ def bigDiv2x1(
   
   # scale down the den 
   den: uint256 = (_den - 1) / factor + 1
-
-  factorDiv: uint256
-  if(_den >= MAX_BEFORE_SQUARE):
-    factorDiv = ((_den - 1) / numMax + 1) * ((MAX_BEFORE_SQUARE - 1) / numMin + 1)
-  else:
-    factorDiv = ((MAX_BEFORE_SQUARE-1) / numMax+1) * ((_den-1) / numMin+1)
-
-  factorMul: uint256 = ((numMin - 1) / (MAX_BEFORE_SQUARE-1)+1)
-  if((MAX_UINT - 1) / factorMul + 1 > ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)):
-    factorMul *= ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)
-    if((MAX_UINT - 1) / (numMax/factor) + 1 > numMin and numMax / factor >= numMax / den): # scaled down nums won't overflow
-      den = (_den - 1) / factorMul + 1
-      return numMax / factorMul * numMin / den
 
   # take the larger value and the scaled down den to minimize rounding
   value: uint256 = numMax / den
