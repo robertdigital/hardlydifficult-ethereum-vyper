@@ -212,7 +212,7 @@ contract('bigDiv', () => {
             // TODO this is temp for faster testing
             if (new BigNumber(numA).times(numB).plus(100).gte(MAX_UINT256)) {
               //  Only run test if the result fits into a uint256
-              it(`bigDiv2x1         ${numA.toFixed()} * ${numB.toFixed()} / ${den.toFixed()} ~= ${bnRes.toFixed()}`, async () => {
+              it(`bigDiv2x1         ${numA.toFixed()} * ${numB.toFixed()} / ${den.toFixed()} ~= ${bnRes.toExponential(2)}`, async () => {
                 await check2x1(numA, numB, den, false);
               });
               // it(`bigDiv2x1 ROUNDUP ${numA} * ${numB} / ${den}`, async () => {
