@@ -67,15 +67,14 @@ def bigDiv2x1(
   else:
     factorMul = MAX_UINT
 
-  if(factorMul < factorDiv):
-    return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
-
   factorTwo: uint256 = (MAX_UINT - 1) / numMax + 1
   if((MAX_UINT - 1) / factorTwo + 1 > _den):
     factorTwo *= _den
   else:
     factorTwo = MAX_UINT
 
+  if(factorMul < factorDiv and factorMul < factorTwo):
+    return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
   if(factorTwo < factorDiv):
     value: uint256 = numMax / ((_den - 1) / factorTwo + 1)
     return value / factorTwo * numMin
