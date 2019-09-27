@@ -64,15 +64,21 @@ def bigDiv2x1(
   factorMul: uint256 = ((numMin - 1) / (MAX_BEFORE_SQUARE-1)+1)
   if((MAX_UINT - 1) / factorMul + 1 > ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)):
     factorMul *= ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)
-    if(factorMul <= factorDiv):
-      return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
+  else:
+    factorMul = MAX_UINT
+
+  if(factorMul < factorDiv):
+    return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
 
   factorTwo: uint256 = (MAX_UINT - 1) / numMax + 1
   if((MAX_UINT - 1) / factorTwo + 1 > _den):
     factorTwo *= _den
-    if(factorTwo < factorDiv):
-      value: uint256 = numMax / ((_den - 1) / factorTwo + 1)
-      return value / factorTwo * numMin
+  else:
+    factorTwo = MAX_UINT
+
+  if(factorTwo < factorDiv):
+    value: uint256 = numMax / ((_den - 1) / factorTwo + 1)
+    return value / factorTwo * numMin
 
   # calculate the factor to scale interm values by
   factor:uint256 = max(_den, numMax) / MAX_BEFORE_SQUARE # round up seems to make no difference
