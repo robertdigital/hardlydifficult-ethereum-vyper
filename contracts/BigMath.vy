@@ -69,6 +69,8 @@ def bigDiv2x1(
   factor = max(2**32 - 1, factor) # TODO is this just for the else condition?
   factor = min(factor, min(_den, numMin))
   
+  factor = min(factor, 2**128)
+  
   # scale down the den 
   den: uint256 = (_den - 1) / factor + 1
 
