@@ -74,6 +74,9 @@ def bigDiv2x1(
   # scale down the den 
   den: uint256 = (_den - 1) / factor + 1
 
+  if((MAX_UINT - 1) / (numMax/factor) + 1 > numMin and numMax / factor >= numMax / den): # scaled down nums won't overflow
+    return numMax / factor * numMin / den
+
   # take the larger value and the scaled down den to minimize rounding
   value: uint256 = numMax / den
 
