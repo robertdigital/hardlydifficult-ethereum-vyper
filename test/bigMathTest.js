@@ -4,7 +4,7 @@
 const BigMath = artifacts.require('BigMath');
 const BigNumber = require('bignumber.js');
 
-const MAX_DELTA_RATIO_FROM_EXPECTED = 0.005; // TODO try to lower this value
+const MAX_DELTA_RATIO_FROM_EXPECTED = 0.0005; // TODO try to lower this value
 const MAX_UINT256 = new BigNumber(
   '115792089237316195423570985008687907853269984665640564039457584007913129639935',
 );
