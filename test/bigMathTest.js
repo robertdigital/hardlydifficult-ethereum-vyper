@@ -156,7 +156,7 @@ contract('bigDiv', () => {
   });
 
   after(async () => {
-    const expected = '0.00049603125880946604';
+    const expected = '0.00009910802775024777';
     assert(maxError.lte(expected), `maxError increased to ${maxError.toFixed()}`);
     if (maxError.lt(expected)) {
       console.log(`maxError decreased to ${maxError.toFixed()}`);
