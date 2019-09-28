@@ -58,7 +58,6 @@ def bigDiv2x1(
   factorDiv: uint256 = ((MAX_UINT - 1) / numMax + 1)
   if((MAX_UINT - 1) / factorDiv + 1 > ((_den - 1) / numMin + 1)):
     factorDiv *= ((_den - 1) / numMin + 1)
-    factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
   else:
     factorDiv = MAX_UINT
 
@@ -102,6 +101,7 @@ def bigDiv2x1(
   # then use the smaller value and the factor to scale back down
   if((MAX_UINT - 1) / value + 1 > numMin): # value * numMin won't overflow
     return value * numMin / factor
+  factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
   return numMin / factorDiv * (numMax / ((_den - 1) / factorDiv + 1))
 
 @public
