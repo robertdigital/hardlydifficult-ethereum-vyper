@@ -102,7 +102,7 @@ def bigDiv2x1(
   # then use the smaller value and the factor to scale back down
   if((MAX_UINT - 1) / value + 1 > numMin): # value * numMin won't overflow
     return value * numMin / factor
-  return numMin / factor * value
+  return numMin / factorDiv * (numMax / ((_den - 1) / factorDiv + 1))
 
 @public
 @constant
