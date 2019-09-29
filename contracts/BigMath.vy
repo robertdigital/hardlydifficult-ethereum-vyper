@@ -56,9 +56,9 @@ def bigDiv2x1(
     # TODO increase before launch to 0.01%, just testing with lower values
     return numMax / _den * numMin
 
-  factorDiv: uint256 = ((MAX_UINT - 1) / numMax + 1)
-  if((MAX_UINT - 1) / factorDiv + 1 > ((_den - 1) / numMin + 1)):
-    factorDiv *= ((_den - 1) / numMin + 1)
+  factorDiv: uint256 = (MAX_UINT - 1) / numMax + 1
+  if((MAX_UINT - 1) / factorDiv + 1 > (_den - 1) / numMin + 1):
+    factorDiv *= (_den - 1) / numMin + 1
   else:
     factorDiv = MAX_UINT
 
@@ -67,7 +67,7 @@ def bigDiv2x1(
     factor = (MAX_UINT - 1)/numMax + 1
   elif(numMax/numMin >= _den/numMax): # TODO > or >=? Round up has no impact it seems
     factor /= 2
-  factor = max(2**64 - 1, factor)
+  factor = max(2**64, factor) 
 
   factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
 
