@@ -53,6 +53,7 @@ def bigDiv2x1(
 
   if(numMax / _den > 1000000000000):
     # _den is small enough to be 0.0000000001% accurate or better w/o a factor
+    # TODO increase before launch to 0.01%, just testing with lower values
     return numMax / _den * numMin
 
   factorDiv: uint256 = ((MAX_UINT - 1) / numMax + 1)
