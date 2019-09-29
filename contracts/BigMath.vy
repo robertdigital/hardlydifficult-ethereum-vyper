@@ -75,6 +75,7 @@ def bigDiv2x1(
 
   # guess
   factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
+  factorDiv = max(factorDiv, factor)
 
   # formula = a / f * (b / (d / f))
   # factor = a / sqrt(MAX) * b / sqrt(MAX)
