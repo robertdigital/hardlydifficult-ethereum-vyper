@@ -83,7 +83,7 @@ def bigDiv2x1(
   else:
     factorMul = MAX_UINT
 
-  if(factorMul < 2**64 or factorMul <= factorDiv):
+  if(factorMul < 2**64 or factorMul <= max(factorDiv, factor)):
     return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
   
   # scale down the den 
