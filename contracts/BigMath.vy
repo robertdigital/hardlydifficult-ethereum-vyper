@@ -33,10 +33,13 @@ def bigDiv2x1(
   rounding applies but should be close to the expected value
   if the expected value is small, a rounding error or 1 may be a large percent error
   """
-  if(_numA == 0 or _numB == 0): # would underflow if we don't special case 0
+  if(_numA == 0 or _numB == 0):
+    # would underflow if we don't special case 0
     return 0
-  if((MAX_UINT - 1) / _numA + 1 > _numB): # a*b does not overflow, return exact math
+  if((MAX_UINT - 1) / _numA + 1 > _numB):
+    # a*b does not overflow, return exact math
     if(_roundUp):
+      # (x - 1) / y + 1 == roundUp(x/y) using int math
       return (_numA * _numB - 1) / _den + 1
     else:
       return _numA * _numB / _den
@@ -53,7 +56,8 @@ def bigDiv2x1(
 
   if(numMax / _den > 1000000000000):
     # _den is small enough to be 0.0000000001% accurate or better w/o a factor
-    # TODO increase before launch to 0.01%, just testing with lower values
+    # this is required for values > 1000000000000 otherwise rounding errors occur
+    # TODO increase before launch to 0.01% (> 10000), just testing with lower values
     return numMax / _den * numMin
 
   # formula = a / (d / f) * (b / f)
