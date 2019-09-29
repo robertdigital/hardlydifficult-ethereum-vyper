@@ -62,18 +62,12 @@ def bigDiv2x1(
   else:
     factorDiv = MAX_UINT
 
-  # calculate the factor to scale interm values by
   factor:uint256 = factorDiv
-  if(numMax >= _den): # TODO is > or >= better here?
-    factor = (MAX_UINT - 1)/numMax + 1 # Round down is okay, is round up better?
-  elif(numMax/numMin < _den/numMax): # TODO > or >=? Round up has no impact it seems
-    pass
-  else:
+  if(numMax >= _den):
+    factor = (MAX_UINT - 1)/numMax + 1
+  elif(numMax/numMin >= _den/numMax): # TODO > or >=? Round up has no impact it seems
     factor /= 2
-  # TODO is 2^32 - 1 a good value to use here?
-  # 2^16 - 2^64 works.  2^128 is too large.
-  # 0 causes rounding down. same for 2^128
-  factor = max(2**64 - 1, factor) # TODO is this just for the else condition? was 32
+  factor = max(2**64 - 1, factor)
 
   factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
 
@@ -86,13 +80,9 @@ def bigDiv2x1(
   if(factorMul < 2**64 or factorMul <= max(factorDiv, factor)):
     return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
   
-  # scale down the den 
   den: uint256 = (_den - 1) / factor + 1
-
-  # take the larger value and the scaled down den to minimize rounding
   value: uint256 = numMax / den
 
-  # then use the smaller value and the factor to scale back down
   if(factor < factorDiv and (MAX_UINT - 1) / value + 1 > numMin): # value * numMin won't overflow
     return value * numMin / factor
   return numMin / factorDiv * (numMax / ((_den - 1) / factorDiv + 1))
