@@ -65,7 +65,7 @@ def bigDiv2x1(
   # calculate the factor to scale interm values by
   factor:uint256 = factorDiv
   if(numMax >= _den): # TODO is > or >= better here?
-    factor = min(factor, (MAX_UINT - 1)/numMax + 1) # Round down is okay, is round up better?
+    factor = (MAX_UINT - 1)/numMax + 1 # Round down is okay, is round up better?
   elif(numMax/numMin < _den/numMax): # TODO > or >=? Round up has no impact it seems
     pass
   else:
