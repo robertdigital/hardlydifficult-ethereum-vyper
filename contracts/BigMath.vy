@@ -54,10 +54,9 @@ def bigDiv2x1(
     numMax = _numB
     numMin = _numA
 
-  if(numMax / _den > 1000000000000):
-    # _den is small enough to be 0.0000000001% accurate or better w/o a factor
+  if(numMax / _den > 10000):
+    # _den is small enough to be 0.01% accurate or better w/o a factor
     # this is required for values > 1000000000000 otherwise rounding errors occur
-    # TODO increase before launch to 0.01% (> 10000), just testing with lower values
     return numMax / _den * numMin
 
   # formula = a / (d / f) * (b / f)
