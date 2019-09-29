@@ -87,7 +87,7 @@ def bigDiv2x1(
   elif(numMax/numMin < _den/numMax): # TODO > or >=? Round up has no impact it seems
     pass
   else:
-    factor /= 10
+    factor /= 2
   # TODO is 2^32 - 1 a good value to use here?
   # 2^16 - 2^64 works.  2^128 is too large.
   # 0 causes rounding down. same for 2^128
