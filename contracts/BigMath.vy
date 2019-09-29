@@ -62,15 +62,6 @@ def bigDiv2x1(
   else:
     factorDiv = MAX_UINT
 
-  factorMul: uint256 = ((numMin - 1) / (MAX_BEFORE_SQUARE-1)+1)
-  if((MAX_UINT - 1) / factorMul + 1 > ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)):
-    factorMul *= ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)
-  else:
-    factorMul = MAX_UINT
-
-  if(factorMul < 2**64 or factorMul <= factorDiv):
-    return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
-
   # calculate the factor to scale interm values by
   factor:uint256 = factorDiv
   if(numMax >= _den): # TODO is > or >= better here?
@@ -83,6 +74,17 @@ def bigDiv2x1(
   # 2^16 - 2^64 works.  2^128 is too large.
   # 0 causes rounding down. same for 2^128
   factor = max(2**64 - 1, factor) # TODO is this just for the else condition? was 32
+
+  factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
+
+  factorMul: uint256 = ((numMin - 1) / (MAX_BEFORE_SQUARE-1)+1)
+  if((MAX_UINT - 1) / factorMul + 1 > ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)):
+    factorMul *= ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)
+  else:
+    factorMul = MAX_UINT
+
+  if(factorMul < 2**64 or factorMul <= factorDiv):
+    return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
   
   # scale down the den 
   den: uint256 = (_den - 1) / factor + 1
@@ -93,7 +95,6 @@ def bigDiv2x1(
   # then use the smaller value and the factor to scale back down
   if((MAX_UINT - 1) / value + 1 > numMin): # value * numMin won't overflow
     return value * numMin / factor
-  factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
   return numMin / factorDiv * (numMax / ((_den - 1) / factorDiv + 1))
 
 @public
