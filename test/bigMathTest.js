@@ -20,7 +20,6 @@ const MAX_UINT64 = new BigNumber(
 const MAX_UINT32 = new BigNumber(
   '4294967295',
 );
-let maxError = new BigNumber(0);
 
 const numbers = [
   new BigNumber('0'),
@@ -103,7 +102,7 @@ const numbers = [
 
 // Checks that the difference is no greater than max(1, MAX_DELTA of expectation)
 const checkBounds = (expectedBN, resultBN, roundUp) => {
-  const diff = expectedBN.minus(resultBN);
+  // const diff = expectedBN.minus(resultBN);
 
   const maxDiff = new BigNumber(MAX_DELTA_RATIO_FROM_EXPECTED).times(
     expectedBN,
@@ -117,18 +116,8 @@ const checkBounds = (expectedBN, resultBN, roundUp) => {
   // console.log('maxDiffBN', maxDiffBN.toFixed())
 
   // let diffDesc = '(unknown delta)';
-  let minVal; let
-    maxVal;
-  if (!expectedBN.eq(new BigNumber(0))) {
-    const diffPct = new BigNumber(diff.toFixed()).div(expectedBN.toFixed());
-    if (expectedBN.gt('10000') && diffPct.gt(maxError)) {
-      maxError = diffPct;
-    }
-    // diffDesc = `(delta=${diffPct
-    //   .times(100)
-    //   // .toPrecision(5)
-    //   .toFixed()}%)`;
-  }
+  let minVal;
+  let maxVal;
 
   if (roundUp) {
     minVal = expectedBN;
@@ -144,7 +133,7 @@ const checkBounds = (expectedBN, resultBN, roundUp) => {
   }
 
   assert(resultBN.gte(minVal), `${resultBN.toFixed()} is not >= ${minVal.toFixed()}`);
-  assert(resultBN.lte(maxVal));
+  assert(resultBN.lte(maxVal), `${resultBN.toFixed()} is not >= ${maxVal.toFixed()}`);
 };
 
 contract('bigDiv', () => {
@@ -153,11 +142,6 @@ contract('bigDiv', () => {
   before(async () => {
     // Update to test new, BigMath contract
     contract = await BigMath.new();
-  });
-
-  after(async () => {
-    assert(maxError.lte(MAX_DELTA_RATIO_FROM_EXPECTED), `maxError increased to ${maxError.toFixed()}`);
-    console.log(`maxError ${maxError.times(100).toFormat(4)}%`);
   });
 
   const check2x1 = async (numA, numB, den, roundUp) => {
