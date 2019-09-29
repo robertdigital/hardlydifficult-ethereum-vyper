@@ -68,17 +68,8 @@ def bigDiv2x1(
   else:
     factorMul = MAX_UINT
 
-  factorTwo: uint256 = (MAX_UINT - 1) / numMax + 1
-  if((MAX_UINT - 1) / factorTwo + 1 > _den):
-    factorTwo *= _den
-  #else:
-  factorTwo = MAX_UINT # is factorTwo helping?
-
-  if((factorMul < 2**64 and factorTwo > factorMul) or (factorMul <= factorDiv and factorMul <= factorTwo)):
+  if(factorMul < 2**64 or factorMul <= factorDiv):
     return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
-  if(factorTwo < 2**64 or factorTwo < factorDiv):
-    value: uint256 = numMax / ((_den - 1) / factorTwo + 1)
-    return value / factorTwo * numMin
 
   # calculate the factor to scale interm values by
   factor:uint256 = factorDiv
