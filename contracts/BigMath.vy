@@ -81,7 +81,7 @@ def bigDiv2x1(
   factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
   factorDiv = max(factorDiv, factor)
 
-  # formula = a / f * (b / (d / f))
+  # formula = ((a / f) * b) / (d / f)
   # factor = a / sqrt(MAX) * b / sqrt(MAX)
   factorMul: uint256 = ((numMin - 1) / (MAX_BEFORE_SQUARE-1)+1)
   if((MAX_UINT - 1) / factorMul + 1 > ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)):
