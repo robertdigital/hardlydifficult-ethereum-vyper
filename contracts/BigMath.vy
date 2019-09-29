@@ -70,7 +70,7 @@ def bigDiv2x1(
   if(numMax >= _den):
     factor = (MAX_UINT - 1)/numMax + 1
   elif(numMax/numMin >= _den/numMax): # TODO > or >=? Round up has no impact it seems
-    factor /= 2
+    factor /= 2 # fails if this is reduced to -= 2 but works with /= 10000
   factor = max(2**64, factor) 
 
   # guess
