@@ -78,7 +78,9 @@ def bigDiv2x1(
 
   # formula = ((a / f) * b) / (d / f)
   # factor >= a / sqrt(MAX) * b / sqrt(MAX)
-  factorMul: uint256 = (numMin - 1) / (MAX_BEFORE_SQUARE - 1) + 1
+  factorMul: uint256 = numMin - 1
+  factorMul /= MAX_BEFORE_SQUARE - 1
+  factorMul += 1
   if((MAX_UINT - 1) / factorMul + 1 > (numMax - 1) / (MAX_BEFORE_SQUARE - 1) + 1):
     factorMul *= (numMax - 1) / (MAX_BEFORE_SQUARE - 1) + 1
   else:
@@ -93,7 +95,9 @@ def bigDiv2x1(
   # formula = a / (d / f) * (b / f)
   # factor >= MAX / a * (d / b)
   # then max with max(d, a) / sqrt(MAX) to help with rounding errors
-  factorDiv: uint256 = (MAX_UINT - 1) / numMax + 1
+  factorDiv: uint256 = MAX_UINT - 1
+  factorDiv /= numMax
+  factorDiv += 1
   if((MAX_UINT - 1) / factorDiv + 1 > (_den - 1) / numMin + 1):
     factorDiv *= (_den - 1) / numMin + 1
   else:
