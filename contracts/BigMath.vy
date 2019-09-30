@@ -13,9 +13,9 @@ MAX_BEFORE_SQUARE: constant(uint256) = 340282366920938463463374607431768211455
 # @notice When multiplying 2 terms, the max value is 2^128-1
 # @dev 340282366920938463463374607431768211456 is 1 too large for squaring
 
-@public
+@private
 @constant
-def bigDiv2x1(
+def _bigDiv2x1(
   _numA: uint256,
   _numB: uint256,
   _den: uint256,
@@ -145,6 +145,16 @@ def bigDiv2x1(
 
 @public
 @constant
+def bigDiv2x1(
+  _numA: uint256,
+  _numB: uint256,
+  _den: uint256,
+  _roundUp: bool # TODO
+) -> uint256:
+  return self._bigDiv2x1(_numA, _numB, _den, _roundUp)
+
+@public
+@constant
 def bigDiv2x2(
   _numA: uint256,
   _numB: uint256,
@@ -162,10 +172,12 @@ def bigDiv2x2(
   @return the approximate value of _numA * _numB / (_denA * _denB)
   @dev rounds down by default. Comments from bigDiv2x1 apply here as well.
   """
+  if((MAX_UINT - 1) / _denA + 1 > _denB):
+    # denA*denB does not overflow, use bigDiv2x1 instead
+    return self._bigDiv2x1(_numA, _numB, _denA * _denB, False)
+
   if(_numA == 0 or _numB == 0):
     return 0
-  if(MAX_UINT / _numA > _numB and MAX_UINT / _denA > _denB):
-    return _numA * _numB / (_denA * _denB)
 
   # Find max value
   value: uint256 = _numA
