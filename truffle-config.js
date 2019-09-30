@@ -1,5 +1,6 @@
 module.exports = {
   mocha: {
+    bail: true,
     enableTimeouts: false,
   },
   compilers: {
