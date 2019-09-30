@@ -85,7 +85,10 @@ def bigDiv2x1(
     factorMul = MAX_UINT
 
   if(factorMul <= 2**128):
-    return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
+    value = numMax / factorMul
+    value *= numMin
+    value /= (_den - 1) / factorMul + 1
+    return value
 
   # formula = a / (d / f) * (b / f)
   # factor >= MAX / a * (d / b)
