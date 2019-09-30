@@ -9,8 +9,8 @@
 MAX_UINT: constant(uint256) = 2**256 - 1
 # @notice The max possible value
 
-MAX_BEFORE_SQUARE: constant(uint256) = 340282366920938463463374607431768211456
-# @notice When multiplying 2 terms, the max value is sqrt(2^256-1) 
+MAX_BEFORE_SQUARE: constant(uint256) = 340282366920938463463374607431768211455
+# @notice When multiplying 2 terms, the max value is 2^128-1
 # @dev 340282366920938463463374607431768211456 is 1 too large for squaring
 
 @public
@@ -79,10 +79,10 @@ def bigDiv2x1(
   # formula = ((a / f) * b) / (d / f)
   # factor >= a / sqrt(MAX) * b / sqrt(MAX)
   factorMul: uint256 = numMin - 1
-  factorMul /= MAX_BEFORE_SQUARE - 1
+  factorMul /= MAX_BEFORE_SQUARE
   factorMul += 1
-  if((MAX_UINT - 1) / factorMul + 1 > (numMax - 1) / (MAX_BEFORE_SQUARE - 1) + 1):
-    factorMul *= (numMax - 1) / (MAX_BEFORE_SQUARE - 1) + 1
+  if((MAX_UINT - 1) / factorMul + 1 > (numMax - 1) / MAX_BEFORE_SQUARE + 1):
+    factorMul *= (numMax - 1) / MAX_BEFORE_SQUARE + 1
   else:
     factorMul = MAX_UINT
 
