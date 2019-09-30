@@ -36,13 +36,21 @@ def bigDiv2x1(
   if(_numA == 0 or _numB == 0):
     # would underflow if we don't special case 0
     return 0
+
+  value: uint256
+
   if((MAX_UINT - 1) / _numA + 1 > _numB):
     # a*b does not overflow, return exact math
+    value = _numA * _numB
     if(_roundUp):
       # (x - 1) / y + 1 == roundUp(x/y) using int math
-      return (_numA * _numB - 1) / _den + 1
+      value -= 1
+      value /= _den
+      value += 1
+      return value
     else:
-      return _numA * _numB / _den
+      value /= _den
+      return value
   
   # Sort numerators
   numMax: uint256
@@ -58,9 +66,26 @@ def bigDiv2x1(
     # _den is small enough to be 0.01% accurate or better w/o a factor
     # this is required for values > 1000000000000 otherwise rounding errors occur
     if(_roundUp):
-      return ((numMax - 1) / _den + 1) * numMin
+      value = numMax - 1
+      value /= _den
+      value += 1
+      value *= numMin
+      return value
     else:
-      return numMax / _den * numMin
+      value = numMax / _den
+      value *= numMin
+      return value
+
+  # formula = ((a / f) * b) / (d / f)
+  # factor >= a / sqrt(MAX) * b / sqrt(MAX)
+  factorMul: uint256 = (numMin - 1) / (MAX_BEFORE_SQUARE - 1) + 1
+  if((MAX_UINT - 1) / factorMul + 1 > (numMax - 1) / (MAX_BEFORE_SQUARE - 1) + 1):
+    factorMul *= (numMax - 1) / (MAX_BEFORE_SQUARE - 1) + 1
+  else:
+    factorMul = MAX_UINT
+
+  if(factorMul <= 2**128):
+    return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
 
   # formula = a / (d / f) * (b / f)
   # factor >= MAX / a * (d / b)
@@ -82,20 +107,9 @@ def bigDiv2x1(
 
   # guess to help with rounding errors
   factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
-
-  # formula = ((a / f) * b) / (d / f)
-  # factor >= a / sqrt(MAX) * b / sqrt(MAX)
-  factorMul: uint256 = (numMin - 1) / (MAX_BEFORE_SQUARE - 1) + 1
-  if((MAX_UINT - 1) / factorMul + 1 > (numMax - 1) / (MAX_BEFORE_SQUARE - 1) + 1):
-    factorMul *= (numMax - 1) / (MAX_BEFORE_SQUARE-1)+1
-  else:
-    factorMul = MAX_UINT
-
-  if(factorMul <= 2**128):
-    return numMax / factorMul * numMin / ((_den - 1) / factorMul + 1)
   
   den: uint256 = (_den - 1) / factor + 1
-  value: uint256 = numMax / den
+  value = numMax / den
 
   if(factor < factorDiv and (MAX_UINT - 1) / value + 1 > numMin): # value * numMin won't overflow
     return value * numMin / factor
