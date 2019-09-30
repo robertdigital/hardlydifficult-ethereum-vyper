@@ -60,7 +60,8 @@ def bigDiv2x1(
     return numMax / _den * numMin
 
   # formula = a / (d / f) * (b / f)
-  # factor = MAX / a * (d / b) - then max with max(d, a) / sqrt(MAX)
+  # factor >= MAX / a * (d / b)
+  # then max with max(d, a) / sqrt(MAX) to help with rounding errors
   factorDiv: uint256 = (MAX_UINT - 1) / numMax + 1
   if((MAX_UINT - 1) / factorDiv + 1 > (_den - 1) / numMin + 1):
     factorDiv *= (_den - 1) / numMin + 1
@@ -74,16 +75,16 @@ def bigDiv2x1(
     factor = (MAX_UINT - 1)/numMax + 1
   elif(numMax/numMin >= _den/numMax): # TODO > or >=? Round up has no impact it seems
     factor /= 2 # fails if this is reduced to -= 2 but works with /= 10000
-  factor = max(2**64, factor) 
+  factor = max(2**64, factor) # this also works with a wide range of values
 
-  # guess
+  # guess to help with rounding errors
   factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
 
   # formula = ((a / f) * b) / (d / f)
-  # factor = a / sqrt(MAX) * b / sqrt(MAX)
-  factorMul: uint256 = ((numMin - 1) / (MAX_BEFORE_SQUARE-1)+1)
-  if((MAX_UINT - 1) / factorMul + 1 > ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)):
-    factorMul *= ((numMax - 1) / (MAX_BEFORE_SQUARE-1)+1)
+  # factor >= a / sqrt(MAX) * b / sqrt(MAX)
+  factorMul: uint256 = (numMin - 1) / (MAX_BEFORE_SQUARE - 1) + 1
+  if((MAX_UINT - 1) / factorMul + 1 > (numMax - 1) / (MAX_BEFORE_SQUARE - 1) + 1):
+    factorMul *= (numMax - 1) / (MAX_BEFORE_SQUARE-1)+1
   else:
     factorMul = MAX_UINT
 
