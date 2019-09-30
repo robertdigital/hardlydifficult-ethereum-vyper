@@ -90,7 +90,7 @@ def _bigDiv2x1(
   else:
     factorMul = MAX_UINT
 
-  if(factorMul <= 2**128):
+  if(factorMul <= MAX_BEFORE_SQUARE):
     value = numMax / factorMul
     value *= numMin
     temp = _den - 1
