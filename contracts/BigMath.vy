@@ -38,6 +38,7 @@ def bigDiv2x1(
     return 0
 
   value: uint256
+  temp: uint256
 
   if((MAX_UINT - 1) / _numA + 1 > _numB):
     # a*b does not overflow, return exact math
@@ -81,15 +82,21 @@ def bigDiv2x1(
   factorMul: uint256 = numMin - 1
   factorMul /= MAX_BEFORE_SQUARE
   factorMul += 1
-  if((MAX_UINT - 1) / factorMul + 1 > (numMax - 1) / MAX_BEFORE_SQUARE + 1):
-    factorMul *= (numMax - 1) / MAX_BEFORE_SQUARE + 1
+  temp = numMax - 1
+  temp /= MAX_BEFORE_SQUARE
+  temp += 1
+  if((MAX_UINT - 1) / factorMul + 1 > temp):
+    factorMul *= temp
   else:
     factorMul = MAX_UINT
 
   if(factorMul <= 2**128):
     value = numMax / factorMul
     value *= numMin
-    value /= (_den - 1) / factorMul + 1
+    temp = _den - 1
+    temp /= factorMul
+    temp += 1
+    value /= temp
     return value
 
   # formula = a / (d / f) * (b / f)
@@ -98,8 +105,11 @@ def bigDiv2x1(
   factorDiv: uint256 = MAX_UINT - 1
   factorDiv /= numMax
   factorDiv += 1
-  if((MAX_UINT - 1) / factorDiv + 1 > (_den - 1) / numMin + 1):
-    factorDiv *= (_den - 1) / numMin + 1
+  temp = _den - 1
+  temp /= numMin
+  temp += 1
+  if((MAX_UINT - 1) / factorDiv + 1 > temp):
+    factorDiv *= temp
   else:
     factorDiv = MAX_UINT
 
@@ -107,7 +117,9 @@ def bigDiv2x1(
   # factor = guess
   factor:uint256 = factorDiv
   if(numMax >= _den):
-    factor = (MAX_UINT - 1)/numMax + 1
+    factor = MAX_UINT - 1
+    factor /= numMax
+    factor += 1
   elif(numMax/numMin >= _den/numMax): # TODO > or >=? Round up has no impact it seems
     factor /= 2 # fails if this is reduced to -= 2 but works with /= 10000
   factor = max(2**64, factor) # this also works with a wide range of values
@@ -115,12 +127,21 @@ def bigDiv2x1(
   # guess to help with rounding errors
   factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
   
-  den: uint256 = (_den - 1) / factor + 1
-  value = numMax / den
+  temp = (_den - 1) / factor + 1
+  value = numMax / temp
 
   if(factor < factorDiv and (MAX_UINT - 1) / value + 1 > numMin): # value * numMin won't overflow
-    return value * numMin / factor
-  return numMin / factorDiv * (numMax / ((_den - 1) / factorDiv + 1))
+    value *= numMin
+    value /= factor
+    return value
+
+  value = numMin / factorDiv
+  temp = _den - 1
+  temp /= factorDiv
+  temp += 1
+  temp = numMax / temp
+  value *= temp
+  return value
 
 @public
 @constant
