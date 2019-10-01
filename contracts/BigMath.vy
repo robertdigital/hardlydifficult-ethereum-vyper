@@ -38,7 +38,6 @@ def _bigDiv2x1(
     return 0
 
   value: uint256
-  temp: uint256
 
   if(MAX_UINT / _numA >= _numB):
     # a*b does not overflow, return exact math
@@ -73,6 +72,8 @@ def _bigDiv2x1(
       value = numMax / _den
     value *= numMin
     return value
+
+  temp: uint256
 
   # formula = ((a / f) * b) / (d / f)
   # factor >= a / sqrt(MAX) * b / sqrt(MAX)
