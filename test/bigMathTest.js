@@ -132,8 +132,8 @@ const checkBounds = (expectedBN, resultBN, roundUp) => {
     console.log('WARNING: expected value range exceeds MAX_UINT256');
   }
 
-  assert(resultBN.gte(minVal), `${resultBN.toFixed()} is not >= ${minVal.toFixed()}`);
-  assert(resultBN.lte(maxVal), `${resultBN.toFixed()} is not >= ${maxVal.toFixed()}`);
+  assert(resultBN.gte(minVal), `${resultBN.toFixed()} is not >= ${minVal.toFixed()} (and <= ${maxVal.toFixed()})`);
+  assert(resultBN.lte(maxVal), `${resultBN.toFixed()} is not <= ${maxVal.toFixed()} (and >= ${minVal.toFixed()})`);
 };
 
 contract('bigDiv', () => {
