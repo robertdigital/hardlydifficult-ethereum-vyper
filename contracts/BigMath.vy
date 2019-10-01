@@ -85,7 +85,7 @@ def _bigDiv2x1(
   temp = numMax - 1
   temp /= MAX_BEFORE_SQUARE
   temp += 1
-  if((MAX_UINT - 1) / factorMul + 1 > temp):
+  if(MAX_UINT / factorMul >= temp):
     factorMul *= temp
   else:
     factorMul = MAX_UINT
@@ -108,7 +108,7 @@ def _bigDiv2x1(
   temp = _den - 1
   temp /= numMin
   temp += 1
-  if((MAX_UINT - 1) / factorDiv + 1 > temp):
+  if(MAX_UINT / factorDiv >= temp):
     factorDiv *= temp
   else:
     factorDiv = MAX_UINT
@@ -128,7 +128,7 @@ def _bigDiv2x1(
   temp = (_den - 1) / factor + 1
   value = numMax / temp
 
-  if(factor < factorDiv and (MAX_UINT - 1) / value + 1 > numMin): # value * numMin won't overflow
+  if(factor < factorDiv and MAX_UINT / value >= numMin): # value * numMin won't overflow
     # formula: a / (d / f) * b / f
     temp = _den - 1
     temp /= factor
