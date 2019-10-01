@@ -123,6 +123,18 @@ def _bigDiv2x1(
 
   # formula = a / (d / f) * b / f
   # factor = guess
+  
+  # TODO testing a temp recalc rounding the other way
+  # formula = a / (d / f) * (b / f)
+  # factor <= MAX / a * (d / b)
+  # then max with max(d, a) / sqrt(MAX) to help with rounding errors
+  factorDiv = MAX_UINT / numMax
+  temp = _den / numMin
+  if(MAX_UINT / factorDiv >= temp):
+    factorDiv *= temp
+  else:
+    factorDiv = MAX_UINT
+
   factor:uint256 = factorDiv
   if(numMax >= _den):
     factor = MAX_UINT # test: this if condition only ever ensured that factor is not used below
