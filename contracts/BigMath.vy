@@ -117,9 +117,7 @@ def _bigDiv2x1(
   # factor = guess
   factor:uint256 = factorDiv
   if(numMax >= _den):
-    factor = MAX_UINT - 1
-    factor /= numMax
-    factor += 1
+    factor = MAX_UINT # test: this if condition only ever ensured that factor is not used below
   elif(numMax/numMin >= _den/numMax): # TODO > or >=? Round up has no impact it seems
     factor = MAX_UINT # test: this if condition only ever ensured that factor is not used below
   factor = max(2**64, factor) # this also works with a wide range of values
