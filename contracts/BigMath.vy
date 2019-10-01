@@ -138,7 +138,7 @@ def _bigDiv2x1(
     factor = MAX_UINT # test: this if condition only ever ensured that factor is not used below
   elif(numMax/numMin >= _den/numMax): # TODO > or >=? Round up has no impact it seems
     factor = MAX_UINT # test: this if condition only ever ensured that factor is not used below
-  factor = max(2**64, factor) # this also works with a wide range of values
+  factor = max(2**32, factor) # this also works with a wide range of values
 
   # guess to help with rounding errors
   factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
