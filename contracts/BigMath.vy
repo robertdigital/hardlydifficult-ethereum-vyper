@@ -40,7 +40,7 @@ def _bigDiv2x1(
   value: uint256
   temp: uint256
 
-  if((MAX_UINT - 1) / _numA + 1 > _numB):
+  if(MAX_UINT / _numA >= _numB):
     # a*b does not overflow, return exact math
     value = _numA * _numB
     if(_roundUp):
