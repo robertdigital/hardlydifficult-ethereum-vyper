@@ -88,12 +88,22 @@ def _bigDiv2x1(
     factorMul = MAX_UINT
 
   if(factorMul <= MAX_BEFORE_SQUARE):
-    value = numMax / factorMul
-    value *= numMin
-    temp = _den - 1
-    temp /= factorMul
-    temp += 1
-    value /= temp
+    if(_roundUp):
+      value = numMax - 1
+      value /= factorMul
+      value += 1
+      value *= numMin
+      temp = _den / factorMul
+      value -= 1
+      value /= temp
+      value += 1
+    else:
+      value = numMax / factorMul
+      value *= numMin
+      temp = _den - 1
+      temp /= factorMul
+      temp += 1
+      value /= temp
     return value
 
   # formula = a / (d / f) * (b / f)
