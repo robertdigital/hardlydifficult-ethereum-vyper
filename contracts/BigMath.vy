@@ -48,10 +48,9 @@ def _bigDiv2x1(
       value -= 1
       value /= _den
       value += 1
-      return value
     else:
       value /= _den
-      return value
+    return value
   
   # Sort numerators
   numMax: uint256
@@ -70,12 +69,10 @@ def _bigDiv2x1(
       value = numMax - 1
       value /= _den
       value += 1
-      value *= numMin
-      return value
     else:
       value = numMax / _den
-      value *= numMin
-      return value
+    value *= numMin
+    return value
 
   # formula = ((a / f) * b) / (d / f)
   # factor >= a / sqrt(MAX) * b / sqrt(MAX)
@@ -130,12 +127,22 @@ def _bigDiv2x1(
 
   if(factor < factorDiv and MAX_UINT / value >= numMin): # value * numMin won't overflow
     # formula: a / (d / f) * b / f
-    temp = _den - 1
-    temp /= factor
-    temp += 1
-    value = numMax / temp
-    value *= numMin
-    value /= factor
+    if(_roundUp):
+      temp = _den / factor
+      value = numMax - 1
+      value /= temp
+      value += 1
+      value *= numMin
+      value -= 1
+      value /= factor
+      value += 1
+    else:
+      temp = _den - 1
+      temp /= factor
+      temp += 1
+      value = numMax / temp
+      value *= numMin
+      value /= factor
     return value
 
   # formula: (a / (d / f)) * (b / f)
