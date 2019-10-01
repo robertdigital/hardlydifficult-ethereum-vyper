@@ -129,10 +129,12 @@ def _bigDiv2x1(
   value = numMax / temp
 
   if(factor < factorDiv and (MAX_UINT - 1) / value + 1 > numMin): # value * numMin won't overflow
+    # formula: a / (d / f) * b / f
     value *= numMin
     value /= factor
     return value
 
+  # formula: (a / (d / f)) * (b / f)
   value = numMin / factorDiv
   temp = _den - 1
   temp /= factorDiv
