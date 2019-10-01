@@ -135,11 +135,19 @@ def _bigDiv2x1(
     return value
 
   # formula: (a / (d / f)) * (b / f)
-  value = numMin / factorDiv
-  temp = _den - 1
-  temp /= factorDiv
-  temp += 1
-  temp = numMax / temp
+  if(_roundUp):
+    value = numMin - 1
+    value /= factorDiv
+    value += 1
+    temp = _den / factorDiv
+    temp = (numMax - 1) / temp
+    temp += 1
+  else:
+    value = numMin / factorDiv
+    temp = _den - 1
+    temp /= factorDiv
+    temp += 1
+    temp = numMax / temp
   value *= temp
   return value
 
