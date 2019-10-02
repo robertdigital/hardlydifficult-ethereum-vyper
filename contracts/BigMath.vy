@@ -73,6 +73,9 @@ def _bigDiv2x1(
     value *= numMin
     return value
 
+  if(_roundUp):
+    return 0 # TODO remove: here for testing one formula at a time
+
   temp: uint256
 
   # formula = ((a / f) * b) / (d / f)
