@@ -100,13 +100,7 @@ const numbers = [
   MAX_UINT256,
 ];
 
-// Checks that the difference is no greater than max(1, MAX_DELTA of expectation)
-const checkBounds = (expectedBN, resultBN, roundUp) => {
-  if (resultBN.eq(0) && roundUp) {
-    return; // TODO restore test, removed to a part at a time
-  }
-  // const diff = expectedBN.minus(resultBN);
-
+const getValue = (expectedBN, roundUp) => {
   const maxDiff = new BigNumber(MAX_DELTA_RATIO_FROM_EXPECTED).times(
     expectedBN,
   );
@@ -130,6 +124,18 @@ const checkBounds = (expectedBN, resultBN, roundUp) => {
     maxVal = expectedBN;
   }
 
+  return [minVal, maxVal];
+};
+
+// Checks that the difference is no greater than max(1, MAX_DELTA of expectation)
+const checkBounds = (expectedBN, resultBN, roundUp) => {
+  if (resultBN.eq(0) && roundUp) {
+    return; // TODO restore test, removed to a part at a time
+  }
+  // const diff = expectedBN.minus(resultBN);
+
+  const [minVal, maxVal] = getValue(expectedBN, roundUp);
+
   // console.log(`Expecting ${resultBN} to be between ${minVal.toFixed()} and ${maxVal.toFixed()}`)
   if (maxVal.gt(MAX_UINT256)) {
     console.log('WARNING: expected value range exceeds MAX_UINT256');
@@ -148,6 +154,14 @@ contract('bigDiv', () => {
   });
 
   const check2x1 = async (numA, numB, den, roundUp) => {
+    let bnRes = new BigNumber(numA).times(new BigNumber(numB)).div(new BigNumber(den));
+    bnRes = bnRes.dp(0, roundUp ? BigNumber.ROUND_UP : BigNumber.ROUND_DOWN);
+
+    const [, maxVal] = getValue(bnRes, roundUp);
+    if (maxVal.gt(MAX_UINT256)) {
+      return; // skip test as the result may overflow when in expected range
+    }
+
     const contractRes = new BigNumber(await contract.bigDiv2x1(
       numA.toFixed(),
       numB.toFixed(),
@@ -155,12 +169,9 @@ contract('bigDiv', () => {
       roundUp,
     ));
 
-    let bnRes = new BigNumber(numA).times(new BigNumber(numB)).div(new BigNumber(den));
-    bnRes = bnRes.dp(0, roundUp ? BigNumber.ROUND_UP : BigNumber.ROUND_DOWN);
 
     checkBounds(bnRes, contractRes, roundUp);
     // expect(contractRes, `(${numA} * ${numB}) / ${den}) failed`).to.be.bignumber.equal(bnRes);
-    return contractRes;
   };
 
   // const check2x2 = async (numA, numB, den1, den2, roundUp) => {
@@ -179,7 +190,6 @@ contract('bigDiv', () => {
   //   checkBounds(bnRes, contractRes, roundUp);
   //   // expect(contractRes, `(${numA} * ${numB}) / (${den1} * ${den2})) failed`)
   //       .to.be.bignumber.equal(bnRes);
-  //   return contractRes;
   // };
 
   for (let a = 0; a < numbers.length; a++) {
