@@ -192,7 +192,7 @@ contract('bigDiv', () => {
   //       .to.be.bignumber.equal(bnRes);
   // };
 
-  for (let a = 0; a < numbers.length; a++) {
+  for (let a = numbers.length - 1; a >= 0; a--) {
     for (let b = a; b < numbers.length; b++) {
       // todo start at 0
       for (let d = 0; d < numbers.length; d++) {
