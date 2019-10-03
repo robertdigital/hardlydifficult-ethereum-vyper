@@ -199,6 +199,11 @@ def _bigDiv2x1(
       value /= factor
     return value
 
+  # test redefining factorDiv
+  factorDiv = numMin - 1
+  factorDiv /= MAX_BEFORE_SQUARE
+  factorDiv += 1
+
   # formula: (a / (d / f)) * (b / f)
   if(_roundUp):
     value = numMin - 1
