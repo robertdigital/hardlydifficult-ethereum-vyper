@@ -73,36 +73,37 @@ def _bigDiv2x1(
     value *= numMin
     return value
 
+  factor: uint256
   temp: uint256
 
   # formula = ((a / f) * b) / (d / f)
   # factor >= a / sqrt(MAX) * b / sqrt(MAX)
   # smallest possible factor gives best results
   # seems to work well up till ~2^128 and then rounding errors occur
-  factorMul: uint256 = numMin - 1
-  factorMul /= MAX_BEFORE_SQUARE
-  factorMul += 1
+  factor = numMin - 1
+  factor /= MAX_BEFORE_SQUARE
+  factor += 1
   temp = numMax - 1
   temp /= MAX_BEFORE_SQUARE
   temp += 1
-  if(MAX_UINT / factorMul >= temp):
-    factorMul *= temp
+  if(MAX_UINT / factor >= temp):
+    factor *= temp
 
-    if(factorMul <= MAX_BEFORE_SQUARE or numMax / factorMul > 100000):
+    if(factor <= MAX_BEFORE_SQUARE or numMax / factor > 100000):
       if(_roundUp):
         value = numMax - 1
-        value /= factorMul
+        value /= factor
         value += 1
         value *= numMin
-        temp = _den / factorMul
+        temp = _den / factor
         value -= 1
         value /= temp
         value += 1
       else:
-        value = numMax / factorMul
+        value = numMax / factor
         value *= numMin
         temp = _den - 1
-        temp /= factorMul
+        temp /= factor
         temp += 1
         value /= temp
       return value
@@ -113,87 +114,45 @@ def _bigDiv2x1(
   # formula = a / (d / f) * b / f
   # factor <= MAX / a * (d / b)
   # TODO rename to factor
-  factorTwo: uint256 = MAX_UINT
-  factorTwo /= numMax
+  factor = MAX_UINT / numMax
   temp = _den / numMin
-  factorTwo *= temp
-  if(factorTwo > 0):
-    if((factorTwo <= MAX_BEFORE_SQUARE and factorTwo > 10000) or numMax/(_den/factorTwo) > 100000):
+  factor *= temp
+  if(factor > 0):
+    if((factor <= MAX_BEFORE_SQUARE and factor > 10000) or numMax/(_den/factor) > 100000):
       if(_roundUp):
-        temp = _den / factorTwo
+        temp = _den / factor
         value = numMax - 1
         value /= temp
         value += 1
         value *= numMin
         value -= 1
-        value /= factorTwo
+        value /= factor
         value += 1
       else:
         temp = _den - 1
-        temp /= factorTwo
+        temp /= factor
         temp += 1
         value = numMax / temp
         value *= numMin
-        value /= factorTwo
+        value /= factor
       return value
 
-  # formula = a / (d / f) * (b / f)
-  # factor >= MAX / a * (d / b)
-  # then max with max(d, a) / sqrt(MAX) to help with rounding errors
-  factorDiv: uint256 = MAX_UINT - 1
-  factorDiv /= numMax
-  factorDiv += 1
-  temp = _den - 1
-  temp /= numMin
-  temp += 1
-  if(MAX_UINT / factorDiv >= temp):
-    factorDiv *= temp
-  else:
-    factorDiv = MAX_UINT
-
-  # factor = guess
-  
-  # TODO testing a temp recalc rounding the other way
-  # formula = a / (d / f) * (b / f)
-  # factor <= MAX / a * (d / b)
-  # then max with max(d, a) / sqrt(MAX) to help with rounding errors
-  factorDiv = MAX_UINT / numMax
-  temp = _den / numMin
-  if(MAX_UINT / factorDiv >= temp):
-    factorDiv *= temp
-  else:
-    factorDiv = MAX_UINT
-
-  factor:uint256 = factorDiv
-  if(numMax >= _den):
-    factor = MAX_UINT # test: this if condition only ever ensured that factor is not used below
-  elif(numMax/numMin >= _den/numMax): # TODO > or >=? Round up has no impact it seems
-    factor = MAX_UINT # test: this if condition only ever ensured that factor is not used below
-  factor = max(2**32, factor) # this also works with a wide range of values
-
-  # guess to help with rounding errors
-  factorDiv = max(factorDiv, max(_den, numMax) / MAX_BEFORE_SQUARE)
-  
-  temp = (_den - 1) / factor + 1
-  value = numMax / temp
-
-  # test redefining factorDiv
-  factorDiv = numMin - 1
-  factorDiv /= MAX_BEFORE_SQUARE
-  factorDiv += 1
-
   # formula: (a / (d / f)) * (b / f)
+  factor = numMin - 1
+  factor /= MAX_BEFORE_SQUARE
+  factor += 1
+
   if(_roundUp):
     value = numMin - 1
-    value /= factorDiv
+    value /= factor
     value += 1
-    temp = _den / factorDiv
+    temp = _den / factor
     temp = (numMax - 1) / temp
     temp += 1
   else:
-    value = numMin / factorDiv
+    value = numMin / factor
     temp = _den - 1
-    temp /= factorDiv
+    temp /= factor
     temp += 1
     temp = numMax / temp
   value *= temp
