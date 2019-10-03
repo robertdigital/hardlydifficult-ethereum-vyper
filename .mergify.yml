@@ -42,7 +42,6 @@ pull_request_rules:
       - "#status-neutral=0"
       - "#status-failure=0"
       - "#assignee=0"
-      - -conflict
     actions:
       merge:
         method: squash
