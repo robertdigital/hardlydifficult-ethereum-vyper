@@ -50,7 +50,10 @@ def _bigDiv2x1(
     else:
       value /= _den
     return value
-  
+
+  if(_roundUp):
+    return 0 # TODO remove: here for testing one formula at a time
+
   # Sort numerators
   numMax: uint256
   numMin: uint256
