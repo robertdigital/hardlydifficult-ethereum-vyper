@@ -169,7 +169,21 @@ def bigDiv2x1(
   _den: uint256,
   _roundUp: bool # TODO
 ) -> uint256:
-  return self._bigDiv2x1(_numA, _numB, _den, _roundUp)
+  value: uint256 = self._bigDiv2x1(_numA, _numB, _den, False)
+  if(_roundUp):
+    # round down has a max error of 0.01%, add that to the result
+    # for a round up error of <= 0.01%
+    if(value > 0):
+      temp: uint256 = value - 1
+      temp /= 10000
+      temp += 1
+      if(MAX_UINT - value <= temp):
+        value = MAX_UINT
+      else:
+        value += temp
+    else:
+      value = 1
+  return value
 
 @public
 @constant
