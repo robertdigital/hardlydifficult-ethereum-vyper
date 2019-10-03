@@ -125,10 +125,6 @@ const getValue = (expectedBN, roundUp) => {
 
 // Checks that the difference is no greater than max(1, MAX_DELTA of expectation)
 const checkBounds = (expectedBN, resultBN, roundUp) => {
-  if (resultBN.eq(0) && roundUp) {
-    return; // TODO restore test, removed to a part at a time
-  }
-
   const [minVal, maxVal] = getValue(expectedBN, roundUp);
 
   if (maxVal.gt(MAX_UINT256)) {
