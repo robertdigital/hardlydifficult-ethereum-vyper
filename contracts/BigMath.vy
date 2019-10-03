@@ -112,32 +112,29 @@ def _bigDiv2x1(
 
   # formula = a / (d / f) * b / f
   # factor <= MAX / a * (d / b)
-  # only works if a/d*b does not overflow
-  temp = numMax / _den
-  if(MAX_UINT / numMin > temp):
-    # TODO rename to factor
-    factorTwo: uint256 = MAX_UINT
-    factorTwo /= numMax
-    temp = _den / numMin
-    factorTwo *= temp
-    if(factorTwo <= MAX_BEFORE_SQUARE and factorTwo > 10000):
-      if(_roundUp):
-        temp = _den / factorTwo
-        value = numMax - 1
-        value /= temp
-        value += 1
-        value *= numMin
-        value -= 1
-        value /= factorTwo
-        value += 1
-      else:
-        temp = _den - 1
-        temp /= factorTwo
-        temp += 1
-        value = numMax / temp
-        value *= numMin
-        value /= factorTwo
-      return value
+  # TODO rename to factor
+  factorTwo: uint256 = MAX_UINT
+  factorTwo /= numMax
+  temp = _den / numMin
+  factorTwo *= temp
+  if(factorTwo <= MAX_BEFORE_SQUARE and factorTwo > 10000):
+    if(_roundUp):
+      temp = _den / factorTwo
+      value = numMax - 1
+      value /= temp
+      value += 1
+      value *= numMin
+      value -= 1
+      value /= factorTwo
+      value += 1
+    else:
+      temp = _den - 1
+      temp /= factorTwo
+      temp += 1
+      value = numMax / temp
+      value *= numMin
+      value /= factorTwo
+    return value
 
   # formula = a / (d / f) * (b / f)
   # factor >= MAX / a * (d / b)
