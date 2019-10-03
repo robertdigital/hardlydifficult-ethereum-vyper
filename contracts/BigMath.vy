@@ -116,7 +116,6 @@ def _bigDiv2x1(
 
   # formula = a / (d / f) * b / f
   # factor <= MAX / a * (d / b)
-  # TODO rename to factor
   factor = MAX_UINT / numMax
   temp = _den / numMin
   factor *= temp
