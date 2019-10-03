@@ -117,24 +117,25 @@ def _bigDiv2x1(
   factorTwo /= numMax
   temp = _den / numMin
   factorTwo *= temp
-  if(factorTwo <= MAX_BEFORE_SQUARE and factorTwo > 10000):
-    if(_roundUp):
-      temp = _den / factorTwo
-      value = numMax - 1
-      value /= temp
-      value += 1
-      value *= numMin
-      value -= 1
-      value /= factorTwo
-      value += 1
-    else:
-      temp = _den - 1
-      temp /= factorTwo
-      temp += 1
-      value = numMax / temp
-      value *= numMin
-      value /= factorTwo
-    return value
+  if(factorTwo > 0):
+    if((factorTwo <= MAX_BEFORE_SQUARE and factorTwo > 10000) or numMax/(_den/factorTwo) > 100000):
+      if(_roundUp):
+        temp = _den / factorTwo
+        value = numMax - 1
+        value /= temp
+        value += 1
+        value *= numMin
+        value -= 1
+        value /= factorTwo
+        value += 1
+      else:
+        temp = _den - 1
+        temp /= factorTwo
+        temp += 1
+        value = numMax / temp
+        value *= numMin
+        value /= factorTwo
+      return value
 
   # formula = a / (d / f) * (b / f)
   # factor >= MAX / a * (d / b)
