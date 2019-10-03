@@ -13,6 +13,9 @@ MAX_BEFORE_SQUARE: constant(uint256) = 340282366920938463463374607431768211455
 # @notice When multiplying 2 terms, the max value is 2^128-1
 # @dev 340282366920938463463374607431768211456 is 1 too large for squaring
 
+MAX_ERROR: constant(uint256) = 10000
+MAX_ERROR_BEFORE_DIV: constant(uint256) = MAX_ERROR * 10
+
 @private
 @constant
 def _bigDiv2x1(
@@ -54,7 +57,7 @@ def _bigDiv2x1(
     numMax = _numB
     numMin = _numA
 
-  if(numMax / _den > 10000):
+  if(numMax / _den > MAX_ERROR):
     # _den is small enough to be 0.01% accurate or better w/o a factor
     # this is required for values > 1000000000000 otherwise rounding errors occur
     value = numMax / _den
@@ -78,7 +81,7 @@ def _bigDiv2x1(
   if(MAX_UINT / factor >= temp):
     factor *= temp
 
-    if(factor <= MAX_BEFORE_SQUARE or numMax / factor > 100000):
+    if(factor <= MAX_BEFORE_SQUARE or numMax / factor > MAX_ERROR_BEFORE_DIV):
       value = numMax / factor
       value *= numMin
       temp = _den - 1
@@ -93,7 +96,7 @@ def _bigDiv2x1(
   temp = _den / numMin
   factor *= temp
   if(factor > 0):
-    if((factor <= MAX_BEFORE_SQUARE and factor > 10000) or numMax/(_den/factor) > 100000):
+    if((factor <= MAX_BEFORE_SQUARE and factor > MAX_ERROR) or numMax/(_den/factor) > MAX_ERROR_BEFORE_DIV):
       temp = _den - 1
       temp /= factor
       temp += 1
@@ -129,7 +132,7 @@ def bigDiv2x1(
     # for a round up error of <= 0.01%
     if(value > 0):
       temp: uint256 = value - 1
-      temp /= 10000
+      temp /= MAX_ERROR
       temp += 1
       if(MAX_UINT - value <= temp):
         value = MAX_UINT
