@@ -120,7 +120,7 @@ def _bigDiv2x1(
     factorTwo /= numMax
     temp = _den / numMin
     factorTwo *= temp
-    if(factorTwo < MAX_BEFORE_SQUARE and factorTwo > 10000):
+    if(factorTwo <= MAX_BEFORE_SQUARE and factorTwo > 10000):
       if(_roundUp):
         temp = _den / factorTwo
         value = numMax - 1
