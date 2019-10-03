@@ -197,9 +197,9 @@ contract('bigDiv', () => {
               it(`bigDiv2x1         ${numA.toFixed()} * ${numB.toFixed()} / ${den.toFixed()} ~= ${bnRes.toExponential(2)}`, async () => {
                 await check2x1(numA, numB, den, false);
               });
-              // it(`bigDiv2x1 ROUNDUP ${numA} * ${numB} / ${den}`, async () => {
-              //   await check2x1(numA, numB, den, true);
-              // });
+              it(`bigDiv2x1 ROUNDUP ${numA.toFixed()} * ${numB.toFixed()} / ${den.toFixed()} ~= ${bnRes.toExponential(2)}`, async () => {
+                await check2x1(numA, numB, den, true);
+              });
             }
           }
         }
