@@ -18,8 +18,7 @@ MAX_BEFORE_SQUARE: constant(uint256) = 340282366920938463463374607431768211455
 def _bigDiv2x1(
   _numA: uint256,
   _numB: uint256,
-  _den: uint256,
-  _roundUp: bool # TODO
+  _den: uint256
 ) -> uint256:
   """
   @notice Multiply the numerators, scaling them down if there is potential for overflow, and then
@@ -42,13 +41,7 @@ def _bigDiv2x1(
   if(MAX_UINT / _numA >= _numB):
     # a*b does not overflow, return exact math
     value = _numA * _numB
-    if(_roundUp):
-      # (x - 1) / y + 1 == roundUp(x/y) using int math
-      value -= 1
-      value /= _den
-      value += 1
-    else:
-      value /= _den
+    value /= _den
     return value
 
   # Sort numerators
@@ -64,12 +57,7 @@ def _bigDiv2x1(
   if(numMax / _den > 10000):
     # _den is small enough to be 0.01% accurate or better w/o a factor
     # this is required for values > 1000000000000 otherwise rounding errors occur
-    if(_roundUp):
-      value = numMax - 1
-      value /= _den
-      value += 1
-    else:
-      value = numMax / _den
+    value = numMax / _den
     value *= numMin
     return value
 
@@ -87,33 +75,17 @@ def _bigDiv2x1(
   temp /= MAX_BEFORE_SQUARE
   temp += 1
 
-  if(_roundUp):
-    return 0 # TODO remove: here for testing one formula at a time
-
   if(MAX_UINT / factor >= temp):
     factor *= temp
 
     if(factor <= MAX_BEFORE_SQUARE or numMax / factor > 100000):
-      if(_roundUp):
-        value = numMax - 1
-        value /= factor
-        value += 1
-        value *= numMin
-        temp = _den / factor
-        value -= 1
-        value /= temp
-        value += 1
-      else:
-        value = numMax / factor
-        value *= numMin
-        temp = _den - 1
-        temp /= factor
-        temp += 1
-        value /= temp
+      value = numMax / factor
+      value *= numMin
+      temp = _den - 1
+      temp /= factor
+      temp += 1
+      value /= temp
       return value
-
-  if(_roundUp):
-    return 0 # TODO remove: here for testing one formula at a time
 
   # formula = a / (d / f) * b / f
   # factor <= MAX / a * (d / b)
@@ -122,22 +94,12 @@ def _bigDiv2x1(
   factor *= temp
   if(factor > 0):
     if((factor <= MAX_BEFORE_SQUARE and factor > 10000) or numMax/(_den/factor) > 100000):
-      if(_roundUp):
-        temp = _den / factor
-        value = numMax - 1
-        value /= temp
-        value += 1
-        value *= numMin
-        value -= 1
-        value /= factor
-        value += 1
-      else:
-        temp = _den - 1
-        temp /= factor
-        temp += 1
-        value = numMax / temp
-        value *= numMin
-        value /= factor
+      temp = _den - 1
+      temp /= factor
+      temp += 1
+      value = numMax / temp
+      value *= numMin
+      value /= factor
       return value
 
   # formula: (a / (d / f)) * (b / f)
@@ -145,19 +107,11 @@ def _bigDiv2x1(
   factor /= MAX_BEFORE_SQUARE
   factor += 1
 
-  if(_roundUp):
-    value = numMin - 1
-    value /= factor
-    value += 1
-    temp = _den / factor
-    temp = (numMax - 1) / temp
-    temp += 1
-  else:
-    value = numMin / factor
-    temp = _den - 1
-    temp /= factor
-    temp += 1
-    temp = numMax / temp
+  value = numMin / factor
+  temp = _den - 1
+  temp /= factor
+  temp += 1
+  temp = numMax / temp
   value *= temp
   return value
 
@@ -167,9 +121,9 @@ def bigDiv2x1(
   _numA: uint256,
   _numB: uint256,
   _den: uint256,
-  _roundUp: bool # TODO
+  _roundUp: bool
 ) -> uint256:
-  value: uint256 = self._bigDiv2x1(_numA, _numB, _den, False)
+  value: uint256 = self._bigDiv2x1(_numA, _numB, _den)
   if(_roundUp):
     # round down has a max error of 0.01%, add that to the result
     # for a round up error of <= 0.01%
@@ -206,7 +160,7 @@ def bigDiv2x2(
   """
   if((MAX_UINT - 1) / _denA + 1 > _denB):
     # denA*denB does not overflow, use bigDiv2x1 instead
-    return self._bigDiv2x1(_numA, _numB, _denA * _denB, False)
+    return self._bigDiv2x1(_numA, _numB, _denA * _denB)
 
   if(_numA == 0 or _numB == 0):
     return 0
