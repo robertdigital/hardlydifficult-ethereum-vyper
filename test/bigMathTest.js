@@ -104,15 +104,11 @@ const getValue = (expectedBN, roundUp) => {
   const maxDiff = new BigNumber(MAX_DELTA_RATIO_FROM_EXPECTED).times(
     expectedBN,
   );
-  // console.log('maxDiff', maxDiff.toFixed())
 
   const maxDiffInt = maxDiff.plus(new BigNumber('1')).dp(0); // // Adds 1 and rounds down, so allows a diff of 1 if expected diff is <1
-  // console.log('maxDiffInt', maxDiffInt.toFixed())
 
   const maxDiffBN = new BigNumber(maxDiffInt.toFixed());
-  // console.log('maxDiffBN', maxDiffBN.toFixed())
 
-  // let diffDesc = '(unknown delta)';
   let minVal;
   let maxVal;
 
@@ -132,11 +128,9 @@ const checkBounds = (expectedBN, resultBN, roundUp) => {
   if (resultBN.eq(0) && roundUp) {
     return; // TODO restore test, removed to a part at a time
   }
-  // const diff = expectedBN.minus(resultBN);
 
   const [minVal, maxVal] = getValue(expectedBN, roundUp);
 
-  // console.log(`Expecting ${resultBN} to be between ${minVal.toFixed()} and ${maxVal.toFixed()}`)
   if (maxVal.gt(MAX_UINT256)) {
     console.log('WARNING: expected value range exceeds MAX_UINT256');
   }
@@ -149,7 +143,6 @@ contract('bigDiv', () => {
   let contract;
 
   before(async () => {
-    // Update to test new, BigMath contract
     contract = await BigMath.new();
   });
 
@@ -169,9 +162,7 @@ contract('bigDiv', () => {
       roundUp,
     ));
 
-
     checkBounds(bnRes, contractRes, roundUp);
-    // expect(contractRes, `(${numA} * ${numB}) / ${den}) failed`).to.be.bignumber.equal(bnRes);
   };
 
   // const check2x2 = async (numA, numB, den1, den2, roundUp) => {
@@ -194,7 +185,6 @@ contract('bigDiv', () => {
 
   for (let a = numbers.length - 1; a >= 0; a--) {
     for (let b = a; b < numbers.length; b++) {
-      // todo start at 0
       for (let d = 0; d < numbers.length; d++) {
         const numA = numbers[a];
         const numB = numbers[b];
@@ -203,9 +193,7 @@ contract('bigDiv', () => {
           const bnRes = new BigNumber(numA).times(new BigNumber(numB)).div(new BigNumber(den));
 
           if (bnRes.lte(MAX_UINT256)) {
-            // TODO this is temp for faster testing
             if (new BigNumber(numA).times(numB).plus(100).gte(MAX_UINT256)) {
-              //  Only run test if the result fits into a uint256
               it(`bigDiv2x1         ${numA.toFixed()} * ${numB.toFixed()} / ${den.toFixed()} ~= ${bnRes.toExponential(2)}`, async () => {
                 await check2x1(numA, numB, den, false);
               });
