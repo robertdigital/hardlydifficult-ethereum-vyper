@@ -91,7 +91,7 @@ def _bigDiv2x1(
   if(MAX_UINT / factorMul >= temp):
     factorMul *= temp
 
-    if(factorMul <= MAX_BEFORE_SQUARE or (numMax / factorMul > 10000 and _den / factorMul > 10000)):
+    if(factorMul <= MAX_BEFORE_SQUARE or numMax / factorMul > 100000):
       if(_roundUp):
         value = numMax - 1
         value /= factorMul
