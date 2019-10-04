@@ -36,7 +36,7 @@ def _bigDiv2x1(
   if the expected value is small, a rounding error or 1 may be a large percent error
   """
   if(_numA == 0 or _numB == 0):
-    # would underflow if we don't special case 0
+    # would div by 0 or underflow if we don't special case 0
     return 0
 
   value: uint256
@@ -166,60 +166,41 @@ def bigDiv2x2(
     return self._bigDiv2x1(_numA, _numB, _denA * _denB)
 
   if(_numA == 0 or _numB == 0):
+    # would div by 0 or underflow if we don't special case 0
     return 0
 
-  # Find max value
-  value: uint256 = _numA
-  if(_numB > value):
-    value = _numB
-  if(_denA > value):
-    value = _denA
-  if(_denB > value):
-    value = _denB
-  
-  # Use max to determine factor to use
-  factor: uint256 = value / MAX_BEFORE_SQUARE 
-  if(factor == 0 or factor >= MAX_BEFORE_SQUARE / 2):
-    factor += 1
-  
-  count: int128 = 0
-  
-  # Numerator
-  if(_numA >= MAX_BEFORE_SQUARE):
-    value = _numA / factor
-    count += 1
+  # Sort denominators
+  denMax: uint256
+  denMin: uint256
+  if(_denA > _denB):
+    denMax = _denA
+    denMin = _denB
   else:
-    value = _numA
-  if(_numB >= MAX_BEFORE_SQUARE):
-    value *= _numB / factor
-    count += 1
-  else:
-    value *= _numB
+    denMax = _denB
+    denMin = _denA
 
-  # Denominator
-  den: uint256
-  if(_denA >= MAX_BEFORE_SQUARE):
-    den = (_denA - 1) / factor + 1
-    count -= 1
-  else:
-    den = _denA
-  if(_denB >= MAX_BEFORE_SQUARE):
-    den *= (_denB - 1) / factor + 1
-    count -= 1
-  else:
-    den *= _denB
-  
-  # Faction
-  value /= den
+  value: uint256
 
-  # Scale back up/down
-  if(count == 1):
-    value *= factor
-  elif(count == 2):
-    value *= factor * factor
-  elif(count == -1):
-    value /= factor
-  elif(count == -2):
-    value /= factor * factor
+  if(MAX_UINT / _numA >= _numB):
+    # a*b does not overflow, use `a / c / d`
+    value = _numA * _numB
+    value /= denMin
+    value /= denMax
+    return value
 
+  # `ab / cd` where both `ab` and `cd` would overflow
+
+  # Sort numerators
+  numMax: uint256
+  numMin: uint256
+  if(_numA > _numB):
+    numMax = _numA
+    numMin = _numB
+  else:
+    numMax = _numB
+    numMin = _numA
+
+  # TODO limit rounding
+  value = numMax / denMax
+  value *= numMin / denMin
   return value
