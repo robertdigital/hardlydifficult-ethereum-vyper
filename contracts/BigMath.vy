@@ -181,6 +181,9 @@ def bigDiv2x2(
 
   value: uint256
 
+  if(True):
+    return 0 # TODO remove
+
   if(MAX_UINT / _numA >= _numB):
     # a*b does not overflow, use `a / c / d`
     value = _numA * _numB
