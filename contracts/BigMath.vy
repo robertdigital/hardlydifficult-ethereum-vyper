@@ -188,9 +188,6 @@ def bigDiv2x2(
     value /= denMax
     return value
 
-  if(True):
-    return 0 # TODO remove
-
   # `ab / cd` where both `ab` and `cd` would overflow
 
   # Sort numerators
