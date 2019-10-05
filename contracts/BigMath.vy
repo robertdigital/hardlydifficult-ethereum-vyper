@@ -203,7 +203,15 @@ def bigDiv2x2(
     numMax = _numB
     numMin = _numA
 
-  # TODO limit rounding
-  value = numMax / denMax
-  value *= numMin / denMin
-  return value
+  if(numMax / denMax > MAX_ERROR):
+    value = numMax / denMax
+    if(MAX_UINT / value >= numMin):
+      value *= numMin
+      value /= denMin
+      return value
+    if(numMin / denMin > MAX_ERROR):
+      value *= numMin / denMin
+      return value
+
+  # TODO
+  return 0
