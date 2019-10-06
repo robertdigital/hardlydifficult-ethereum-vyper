@@ -100,23 +100,22 @@ const numbers = [
   MAX_UINT256,
 ];
 
-const getValue = (expectedBN, roundUp) => {
+const getValue = (expectedBN, roundUp, allowIncreasedDiff) => {
   const maxDiff = new BigNumber(MAX_DELTA_RATIO_FROM_EXPECTED).times(
+    allowIncreasedDiff ? 10 : 1,
+  ).times(
     expectedBN,
   );
 
-  const maxDiffInt = maxDiff.plus(new BigNumber('1')).dp(0); // // Adds 1 and rounds down, so allows a diff of 1 if expected diff is <1
-
-  const maxDiffBN = new BigNumber(maxDiffInt.toFixed());
-
+  const maxDiffInt = maxDiff.plus(allowIncreasedDiff ? 2 : 1).dp(0);
   let minVal;
   let maxVal;
 
   if (roundUp) {
     minVal = expectedBN;
-    maxVal = expectedBN.plus(maxDiffBN);
+    maxVal = expectedBN.plus(maxDiffInt);
   } else {
-    minVal = expectedBN.minus(maxDiffBN);
+    minVal = expectedBN.minus(maxDiffInt);
     maxVal = expectedBN;
   }
 
@@ -124,18 +123,15 @@ const getValue = (expectedBN, roundUp) => {
 };
 
 // Checks that the difference is no greater than max(1, MAX_DELTA of expectation)
-const checkBounds = (expectedBN, resultBN, roundUp) => {
-  const [minVal, maxVal] = getValue(expectedBN, roundUp);
+const checkBounds = (expectedBN, resultBN, roundUp, allowIncreasedDiff) => {
+  const [minVal, maxVal] = getValue(expectedBN, roundUp, allowIncreasedDiff);
 
   if (maxVal.gt(MAX_UINT256)) {
     console.log('WARNING: expected value range exceeds MAX_UINT256');
   }
 
-  // TODO remove!
-  if (resultBN.gt(0)) {
-    assert(resultBN.gte(minVal), `${resultBN.toFixed()} is not >= ${minVal.toFixed()} (and <= ${maxVal.toFixed()})`);
-    assert(resultBN.lte(maxVal), `${resultBN.toFixed()} is not <= ${maxVal.toFixed()} (and >= ${minVal.toFixed()})`);
-  }
+  assert(resultBN.gte(minVal), `${resultBN.toFixed()} is not >= ${minVal.toFixed()} (and <= ${maxVal.toFixed()})`);
+  assert(resultBN.lte(maxVal), `${resultBN.toFixed()} is not <= ${maxVal.toFixed()} (and >= ${minVal.toFixed()})`);
 };
 
 contract('bigDiv', () => {
@@ -168,7 +164,7 @@ contract('bigDiv', () => {
     let res2x2 = new BigNumber(numA).times(numB).div(new BigNumber(denA).times(denB));
     res2x2 = res2x2.dp(0, BigNumber.ROUND_DOWN);
 
-    const [, maxVal] = getValue(res2x2, false);
+    const [, maxVal] = getValue(res2x2, false, true);
     if (maxVal.gt(MAX_UINT256)) {
       return; // skip test as the result may overflow when in expected range
     }
@@ -180,8 +176,17 @@ contract('bigDiv', () => {
       denB.toFixed(),
     ));
 
-    checkBounds(res2x2, contractRes, false);
+    checkBounds(res2x2, contractRes, false, true);
   };
+
+  it.skip('test', async () => {
+    await check2x2(
+      new BigNumber('6277101735386680763835789423207666416102355444464034512896'),
+      new BigNumber('6277101735386680763835789423207666416102355444464034512896'),
+      new BigNumber('115792089237316195423570985008687907853269984665640564039457584007913129639933'),
+      new BigNumber('115792089237316195423570985008687907853269984665640564039457584007913129639933'),
+    );
+  });
 
   for (let a = numbers.length - 1; a >= 0; a--) {
     for (let b = a; b < numbers.length; b++) {
@@ -206,8 +211,7 @@ contract('bigDiv', () => {
           const bnRes = new BigNumber(numA).times(numB).div(den);
           if (bnRes.lte(MAX_UINT256)) {
             if (new BigNumber(numA).times(numB).plus(100).gte(MAX_UINT256)) {
-              // TODO remove the .skip
-              it.skip(`bigDiv2x1         ${numA.toFixed()} * ${numB.toFixed()} / ${den.toFixed()} ~= ${bnRes.toExponential(2)}`, async () => {
+              it(`bigDiv2x1         ${numA.toFixed()} * ${numB.toFixed()} / ${den.toFixed()} ~= ${bnRes.toExponential(2)}`, async () => {
                 await check2x1(numA, numB, den, false);
                 await check2x1(numA, numB, den, true);
               });

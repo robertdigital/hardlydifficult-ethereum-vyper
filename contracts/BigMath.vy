@@ -57,10 +57,9 @@ def _bigDiv2x1(
     numMax = _numB
     numMin = _numA
 
-  if(numMax / _den > MAX_ERROR):
+  value = numMax / _den
+  if(value > MAX_ERROR):
     # _den is small enough to be 0.01% accurate or better w/o a factor
-    # this is required for values > 1000000000000 otherwise rounding errors occur
-    value = numMax / _den
     value *= numMin
     return value
 
@@ -81,8 +80,8 @@ def _bigDiv2x1(
   if(MAX_UINT / factor >= temp):
     factor *= temp
 
-    if(factor <= MAX_BEFORE_SQUARE or numMax / factor > MAX_ERROR_BEFORE_DIV):
-      value = numMax / factor
+    value = numMax / factor
+    if(factor <= MAX_BEFORE_SQUARE or value > MAX_ERROR_BEFORE_DIV):
       value *= numMin
       temp = _den - 1
       temp /= factor
@@ -96,11 +95,11 @@ def _bigDiv2x1(
   temp = _den / numMin
   factor *= temp
   if(factor > 0):
-    if((factor <= MAX_BEFORE_SQUARE and factor > MAX_ERROR) or numMax/(_den/factor) > MAX_ERROR_BEFORE_DIV):
-      temp = _den - 1
-      temp /= factor
-      temp += 1
-      value = numMax / temp
+    temp = _den - 1
+    temp /= factor
+    temp += 1
+    value = numMax / temp
+    if((factor <= MAX_BEFORE_SQUARE and factor > MAX_ERROR) or value > MAX_ERROR_BEFORE_DIV):
       value *= numMin
       value /= factor
       return value
@@ -182,7 +181,7 @@ def bigDiv2x2(
   value: uint256
 
   if(MAX_UINT / _numA >= _numB):
-    # a*b does not overflow, use `a / c / d`
+    # a*b does not overflow, use `a / d / c`
     value = _numA * _numB
     value /= denMin
     value /= denMax
@@ -200,15 +199,94 @@ def bigDiv2x2(
     numMax = _numB
     numMin = _numA
 
-  if(numMax / denMax > MAX_ERROR):
-    value = numMax / denMax
+  temp: uint256
+
+  # formula = (a/d)*b/c
+  temp = numMax / denMin
+  if(temp > MAX_ERROR_BEFORE_DIV):
+    return self._bigDiv2x1(temp, numMin, denMax)
+
+  # formula: ((a/c) * b) / d or (a/c) * (b/d)
+  value = numMax / denMax
+  if(value > MAX_ERROR):
+    # denMax is small enough to be 0.01% accurate or better w/o a factor
     if(MAX_UINT / value >= numMin):
+      # multiply first won't overflow and limits rounding
       value *= numMin
       value /= denMin
       return value
-    if(numMin / denMin > MAX_ERROR):
-      value *= numMin / denMin
+    temp = numMin / denMin
+    if(temp > MAX_ERROR):
+      # denMin is small enough to be 0.01% accurate or better w/o a factor
+      value *= temp
       return value
 
-  # TODO
-  return 0
+  factor: uint256
+
+  # formula: ((a/f) * b) / d then either * f / c or / c * f
+  # factor >= a / sqrt(MAX) * b / sqrt(MAX)
+  factor = numMin - 1
+  factor /= MAX_BEFORE_SQUARE
+  factor += 1
+  temp = numMax - 1
+  temp /= MAX_BEFORE_SQUARE
+  temp += 1
+  if(MAX_UINT / factor >= temp):
+    factor *= temp
+
+    value = numMax / factor
+    if(factor <= MAX_BEFORE_SQUARE or value > MAX_ERROR_BEFORE_DIV):
+      value *= numMin
+      value /= denMin
+      if(value > 0):
+        if(MAX_UINT / value >= factor):
+          value *= factor
+          value /= denMax
+        else: # TODO remove this path?
+          value /= denMax
+          value *= factor
+      return value
+
+  # TODO this could overflow... hmm
+  # maybe div with max uint and use that to determine the remainder as the factor
+  factor = denMin
+  factor /= MAX_BEFORE_SQUARE + 1
+  temp = denMax
+  temp /= MAX_BEFORE_SQUARE + 1
+  if(MAX_UINT / factor >= temp):
+    factor *= temp
+    return self._bigDiv2x1(numMax / factor, numMin, MAX_UINT)
+    
+  return 42 # TODO
+  # factor = denMin - 1
+  # factor /= numMax
+  # factor += 1
+  # factor *= MAX_ERROR
+  # temp = denMin - 1
+  # temp /= factor
+  # temp += 1
+  # value = numMax / temp
+  # temp = denMax
+  # if(MAX_UINT / temp >= factor):
+  #   temp *= factor
+  #   return self._bigDiv2x1(value, numMin, temp)
+  # else:
+  #   value = self._bigDiv2x1(value, numMin, temp)
+  #   value *= factor
+  #   return value
+  # formula: (a/(c/f)) * (b/(d/f))
+  # factor: d / sqrt(MAX)
+  # factor = denMin - 1
+  # factor /= MAX_BEFORE_SQUARE
+  # factor += 1
+
+  # temp = denMax - 1
+  # temp /= factor
+  # temp += 1
+  # value = numMax / temp
+  # temp = denMin - 1
+  # temp /= factor
+  # temp += 1
+  # temp = numMin / temp
+  # value *= temp
+  # return value
