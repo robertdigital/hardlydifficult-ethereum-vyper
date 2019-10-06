@@ -1,25 +1,14 @@
-/**
- * Tests the bigDiv math
- */
 const BigMath = artifacts.require('BigMath');
 const BigNumber = require('bignumber.js');
 
-const MAX_DELTA_RATIO_FROM_EXPECTED = 0.0001; // Goal was 0.01% accurate or better
-const MAX_UINT256 = new BigNumber(
-  '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-);
-const MAX_UINT192 = new BigNumber(
-  '6277101735386680763835789423207666416102355444464034512895',
-);
-const MAX_UINT128 = new BigNumber(
-  '340282366920938463463374607431768211455',
-);
-const MAX_UINT64 = new BigNumber(
-  '18446744073709551615',
-);
-const MAX_UINT32 = new BigNumber(
-  '4294967295',
-);
+// Goal is up to off by 1 + 0.01% error for 2x1
+// TODO 2x2 currently checks for off by 2 + 0.1% error
+const MAX_DELTA_RATIO_FROM_EXPECTED = 0.0001;
+const MAX_UINT256 = new BigNumber(2).pow(256).minus(1);
+const MAX_UINT192 = new BigNumber(2).pow(192).minus(1);
+const MAX_UINT128 = new BigNumber(2).pow(128).minus(1);
+const MAX_UINT64 = new BigNumber(2).pow(64).minus(1);
+const MAX_UINT32 = new BigNumber(2).pow(32).minus(1);
 
 const numbers = [
   // new BigNumber('0'),
