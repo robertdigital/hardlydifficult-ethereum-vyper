@@ -2,9 +2,6 @@
 # restores the proper size after division.  
 # @notice This effectively allows us to overflow values in the numerator and/or denominator 
 # of a fraction, so long as the end result does not overflow as well.
-# @dev Each individual numerator or denominator term is reduced if large so that multiplication 
-# is safe from overflow.  Then we perform the division using the reduced terms.  Finally the
-# result is increased to restore the original scale of terms.
 
 MAX_UINT: constant(uint256) = 2**256 - 1
 # @notice The max possible value
@@ -14,7 +11,10 @@ MAX_BEFORE_SQUARE: constant(uint256) = 340282366920938463463374607431768211455
 # @dev 340282366920938463463374607431768211456 is 1 too large for squaring
 
 MAX_ERROR: constant(uint256) = 10000
+# @notice Representing up to 0.01% error
+
 MAX_ERROR_BEFORE_DIV: constant(uint256) = MAX_ERROR * 10
+# @notice A larger error threshold to use when multiple rounding errors may apply
 
 @private
 @constant
@@ -24,16 +24,11 @@ def _bigDiv2x1(
   _den: uint256
 ) -> uint256:
   """
-  @notice Multiply the numerators, scaling them down if there is potential for overflow, and then
-  scale them back up after division.
+  @notice Returns the approx result of `a * b / d` so long as the result is <= MAX_UINT
   @param _numA the first numerator term
   @param _numB the second numerator term
   @param _den the denominator
-  @param _roundUp if true, the math may round the final value up from the exact expected value
-  @return the approximate value of _numA * _numB / _den
-  @dev this will overflow if the final value is > MAX_UINT (and may overflow if ~MAX_UINT)
-  rounding applies but should be close to the expected value
-  if the expected value is small, a rounding error or 1 may be a large percent error
+  @return the approx result with up to off by 1 + 0.01% error
   """
   if(_numA == 0 or _numB == 0):
     # would div by 0 or underflow if we don't special case 0
@@ -68,8 +63,6 @@ def _bigDiv2x1(
 
   # formula = ((a / f) * b) / (d / f)
   # factor >= a / sqrt(MAX) * b / sqrt(MAX)
-  # smallest possible factor gives best results
-  # seems to work well up till ~2^128 and then rounding errors occur
   factor = numMin - 1
   factor /= MAX_BEFORE_SQUARE
   factor += 1
@@ -105,10 +98,10 @@ def _bigDiv2x1(
       return value
 
   # formula: (a / (d / f)) * (b / f)
+  # factor: b / sqrt(MAX)
   factor = numMin - 1
   factor /= MAX_BEFORE_SQUARE
   factor += 1
-
   value = numMin / factor
   temp = _den - 1
   temp /= factor
@@ -125,20 +118,34 @@ def bigDiv2x1(
   _den: uint256,
   _roundUp: bool
 ) -> uint256:
+  """
+  @notice Returns the approx result of `a * b / d` so long as the result is <= MAX_UINT
+  @param _numA the first numerator term
+  @param _numB the second numerator term
+  @param _den the denominator
+  @param _roundUp if true, the math may round the final value up from the exact expected value
+  @return the approx result with up to off by 1 + 0.01% error
+  @dev _roundUp is implemented by first rounding down and then adding the max error to the result
+  """
+  # first get the rounded down result
   value: uint256 = self._bigDiv2x1(_numA, _numB, _den)
+
   if(_roundUp):
+    if(value == 0):
+      # when the value rounds down to 0, assume up to an off by 1 error
+      return 1
+
     # round down has a max error of 0.01%, add that to the result
     # for a round up error of <= 0.01%
-    if(value > 0):
-      temp: uint256 = value - 1
-      temp /= MAX_ERROR
-      temp += 1
-      if(MAX_UINT - value <= temp):
-        value = MAX_UINT
-      else:
-        value += temp
-    else:
-      value = 1
+    temp: uint256 = value - 1
+    temp /= MAX_ERROR
+    temp += 1
+    if(MAX_UINT - value < temp):
+      # value + error would overflow, return MAX
+      return MAX_UINT
+
+    value += temp
+
   return value
 
 @public
@@ -150,15 +157,13 @@ def bigDiv2x2(
   _denB: uint256
 ) -> uint256:
   """
-  @notice Multiply the numerators, scaling them down if there is potential for overflow.
-  Multiply the denominators, scaling them down if there is potential for overflow.
-  Then compute the fraction and scale the final value back up or down as appropriate.
+  @notice Returns the approx result of `a * b / (c * d)` so long as the result is <= MAX_UINT
   @param _numA the first numerator term
   @param _numB the second numerator term
   @param _denA the first denominator term
   @param _denB the second denominator term
-  @return the approximate value of _numA * _numB / (_denA * _denB)
-  @dev rounds down by default. Comments from bigDiv2x1 apply here as well.
+  @return the approx result with up to off by 2 + 0.1% error
+  @dev this uses bigDiv2x1 and adds additional rounding error so the max error of this formula is larger
   """
   if((MAX_UINT - 1) / _denA + 1 > _denB):
     # denA*denB does not overflow, use bigDiv2x1 instead
@@ -247,46 +252,11 @@ def bigDiv2x2(
           value *= factor
       return value
 
-  # TODO this could overflow... hmm
-  # maybe div with max uint and use that to determine the remainder as the factor
+  # formula: (a/f) * b / ((c*d)/f)
+  # factor >= c / sqrt(MAX) * d / sqrt(MAX)
   factor = denMin
   factor /= MAX_BEFORE_SQUARE + 1
   temp = denMax
   temp /= MAX_BEFORE_SQUARE + 1
-  if(MAX_UINT / factor >= temp):
-    factor *= temp
-    return self._bigDiv2x1(numMax / factor, numMin, MAX_UINT)
-    
-  return 42 # TODO
-  # factor = denMin - 1
-  # factor /= numMax
-  # factor += 1
-  # factor *= MAX_ERROR
-  # temp = denMin - 1
-  # temp /= factor
-  # temp += 1
-  # value = numMax / temp
-  # temp = denMax
-  # if(MAX_UINT / temp >= factor):
-  #   temp *= factor
-  #   return self._bigDiv2x1(value, numMin, temp)
-  # else:
-  #   value = self._bigDiv2x1(value, numMin, temp)
-  #   value *= factor
-  #   return value
-  # formula: (a/(c/f)) * (b/(d/f))
-  # factor: d / sqrt(MAX)
-  # factor = denMin - 1
-  # factor /= MAX_BEFORE_SQUARE
-  # factor += 1
-
-  # temp = denMax - 1
-  # temp /= factor
-  # temp += 1
-  # value = numMax / temp
-  # temp = denMin - 1
-  # temp /= factor
-  # temp += 1
-  # temp = numMin / temp
-  # value *= temp
-  # return value
+  factor *= temp
+  return self._bigDiv2x1(numMax / factor, numMin, MAX_UINT)
