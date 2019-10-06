@@ -6,9 +6,8 @@
 MAX_UINT: constant(uint256) = 2**256 - 1
 # @notice The max possible value
 
-MAX_BEFORE_SQUARE: constant(uint256) = 340282366920938463463374607431768211455
-# @notice When multiplying 2 terms, the max value is 2^128-1
-# @dev 340282366920938463463374607431768211456 is 1 too large for squaring
+MAX_BEFORE_SQUARE: constant(uint256) = 2**128 - 1
+# @notice When multiplying 2 terms <= this value the result won't overflow
 
 MAX_ERROR: constant(uint256) = 10000
 # @notice Representing up to 0.01% error
