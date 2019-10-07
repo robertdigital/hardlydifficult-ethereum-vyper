@@ -12,7 +12,7 @@ MAX_BEFORE_SQUARE: constant(uint256) = 2**128 - 1
 MAX_ERROR: constant(uint256) = 100000000
 # @notice Representing up to 0.000001% error
 
-MAX_ERROR_BEFORE_DIV: constant(uint256) = MAX_ERROR * 10
+MAX_ERROR_BEFORE_DIV: constant(uint256) = MAX_ERROR * 2
 # @notice A larger error threshold to use when multiple rounding errors may apply
 
 @private
