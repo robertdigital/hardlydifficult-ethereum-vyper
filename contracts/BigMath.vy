@@ -149,7 +149,7 @@ def bigDiv2x2(
   @return the approx result with up to off by 2 + MAX_ERROR*10 error, rounding down if needed
   @dev this uses bigDiv2x1 and adds additional rounding error so the max error of this formula is larger
   """
-  if((MAX_UINT - 1) / _denA + 1 > _denB):
+  if(MAX_UINT / _denA >= _denB):
     # denA*denB does not overflow, use bigDiv2x1 instead
     return self._bigDiv2x1(_numA, _numB, _denA * _denB)
 
