@@ -231,10 +231,7 @@ def bigDiv2x2(
         if(MAX_UINT / value >= factor):
           value *= factor
           value /= denMax
-        else: # TODO remove this path?
-          value /= denMax
-          value *= factor
-      return value
+          return value
 
   # formula: (a/f) * b / ((c*d)/f)
   # factor >= c / sqrt(MAX) * (d / sqrt(MAX))
