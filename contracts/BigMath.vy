@@ -81,21 +81,6 @@ def _bigDiv2x1(
       value /= temp
       return value
 
-  # formula = a / (d / f) * b / f
-  # factor <= MAX / a * (d / b)
-  factor = MAX_UINT / numMax
-  temp = _den / numMin
-  factor *= temp
-  if(factor > 0):
-    temp = _den - 1
-    temp /= factor
-    temp += 1
-    value = numMax / temp
-    if((factor <= MAX_BEFORE_SQUARE and factor > MAX_ERROR) or value > MAX_ERROR_BEFORE_DIV):
-      value *= numMin
-      value /= factor
-      return value
-
   # formula: (a / (d / f)) * (b / f)
   # factor: b / sqrt(MAX)
   factor = numMin - 1
