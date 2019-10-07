@@ -224,7 +224,7 @@ def bigDiv2x2(
     factor *= temp
 
     value = numMax / factor
-    if(factor <= MAX_BEFORE_SQUARE or value > MAX_ERROR_BEFORE_DIV):
+    if(value > MAX_ERROR_BEFORE_DIV):
       value *= numMin
       value /= denMin
       if(value > 0):
