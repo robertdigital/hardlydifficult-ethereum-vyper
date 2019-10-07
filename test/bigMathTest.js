@@ -1,9 +1,9 @@
 const BigMath = artifacts.require('BigMath');
 const BigNumber = require('bignumber.js');
 
-// Goal is up to off by 1 + 0.01% error for 2x1
-// TODO 2x2 currently checks for off by 2 + 0.1% error
-const MAX_DELTA_RATIO_FROM_EXPECTED = 0.0001;
+// Goal is up to off by 1 + 0.00001% error for 2x1
+// TODO 2x2 currently checks for off by 2 + 0.0001% error
+const MAX_DELTA_RATIO_FROM_EXPECTED = 0.0000001;
 const MAX_UINT256 = new BigNumber(2).pow(256).minus(1);
 const MAX_UINT192 = new BigNumber(2).pow(192).minus(1);
 const MAX_UINT128 = new BigNumber(2).pow(128).minus(1);
