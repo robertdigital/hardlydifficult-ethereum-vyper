@@ -10,7 +10,7 @@ MAX_BEFORE_SQUARE: constant(uint256) = 2**128 - 1
 # @notice When multiplying 2 terms <= this value the result won't overflow
 
 MAX_ERROR: constant(uint256) = 100000000
-# @notice Representing up to 0.000001% error
+# @notice The max error target is off by 1 plus up to 0.000001% error for 2x1 and that `* 2` for 2x2
 
 MAX_ERROR_BEFORE_DIV: constant(uint256) = MAX_ERROR * 2
 # @notice A larger error threshold to use when multiple rounding errors may apply
@@ -68,10 +68,8 @@ def _bigDiv2x1(
   temp = numMax - 1
   temp /= MAX_BEFORE_SQUARE
   temp += 1
-
   if(MAX_UINT / factor >= temp):
     factor *= temp
-
     value = numMax / factor
     if(value > MAX_ERROR_BEFORE_DIV):
       value *= numMin
