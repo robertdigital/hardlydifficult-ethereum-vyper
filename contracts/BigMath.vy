@@ -9,8 +9,8 @@ MAX_UINT: constant(uint256) = 2**256 - 1
 MAX_BEFORE_SQUARE: constant(uint256) = 2**128 - 1
 # @notice When multiplying 2 terms <= this value the result won't overflow
 
-MAX_ERROR: constant(uint256) = 10000
-# @notice Representing up to 0.01% error
+MAX_ERROR: constant(uint256) = 100000000
+# @notice Representing up to 0.000001% error
 
 MAX_ERROR_BEFORE_DIV: constant(uint256) = MAX_ERROR * 10
 # @notice A larger error threshold to use when multiple rounding errors may apply
