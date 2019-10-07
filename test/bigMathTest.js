@@ -91,7 +91,7 @@ const numbers = [
 
 const getValue = (expectedBN, roundUp, allowIncreasedDiff) => {
   const maxDiff = new BigNumber(MAX_DELTA_RATIO_FROM_EXPECTED).times(
-    allowIncreasedDiff ? 10 : 1,
+    allowIncreasedDiff ? 2 : 1,
   ).times(
     expectedBN,
   );
