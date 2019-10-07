@@ -73,7 +73,7 @@ def _bigDiv2x1(
     factor *= temp
 
     value = numMax / factor
-    if(factor <= MAX_BEFORE_SQUARE or value > MAX_ERROR_BEFORE_DIV):
+    if(value > MAX_ERROR_BEFORE_DIV):
       value *= numMin
       temp = _den - 1
       temp /= factor
