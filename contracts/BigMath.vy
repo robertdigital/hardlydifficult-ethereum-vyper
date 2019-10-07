@@ -27,7 +27,7 @@ def _bigDiv2x1(
   @param _numA the first numerator term
   @param _numB the second numerator term
   @param _den the denominator
-  @return the approx result with up to off by 1 + 0.01% error
+  @return the approx result with up to off by 1 + MAX_ERROR, rounding down if needed
   """
   if(_numA == 0 or _numB == 0):
     # would div by 0 or underflow if we don't special case 0
@@ -53,7 +53,7 @@ def _bigDiv2x1(
 
   value = numMax / _den
   if(value > MAX_ERROR):
-    # _den is small enough to be 0.01% accurate or better w/o a factor
+    # _den is small enough to be MAX_ERROR or better w/o a factor
     value *= numMin
     return value
 
@@ -61,7 +61,7 @@ def _bigDiv2x1(
   temp: uint256
 
   # formula = ((a / f) * b) / (d / f)
-  # factor >= a / sqrt(MAX) * b / sqrt(MAX)
+  # factor >= a / sqrt(MAX) * (b / sqrt(MAX))
   factor = numMin - 1
   factor /= MAX_BEFORE_SQUARE
   factor += 1
@@ -123,7 +123,7 @@ def bigDiv2x1(
   @param _numB the second numerator term
   @param _den the denominator
   @param _roundUp if true, the math may round the final value up from the exact expected value
-  @return the approx result with up to off by 1 + 0.01% error
+  @return the approx result with up to off by 1 + MAX_ERROR, rounding down if needed
   @dev _roundUp is implemented by first rounding down and then adding the max error to the result
   """
   # first get the rounded down result
@@ -134,8 +134,8 @@ def bigDiv2x1(
       # when the value rounds down to 0, assume up to an off by 1 error
       return 1
 
-    # round down has a max error of 0.01%, add that to the result
-    # for a round up error of <= 0.01%
+    # round down has a max error of MAX_ERROR, add that to the result
+    # for a round up error of <= MAX_ERROR
     temp: uint256 = value - 1
     temp /= MAX_ERROR
     temp += 1
@@ -161,7 +161,7 @@ def bigDiv2x2(
   @param _numB the second numerator term
   @param _denA the first denominator term
   @param _denB the second denominator term
-  @return the approx result with up to off by 2 + 0.1% error
+  @return the approx result with up to off by 2 + MAX_ERROR*10 error, rounding down if needed
   @dev this uses bigDiv2x1 and adds additional rounding error so the max error of this formula is larger
   """
   if((MAX_UINT - 1) / _denA + 1 > _denB):
@@ -213,7 +213,7 @@ def bigDiv2x2(
   # formula: ((a/c) * b) / d or (a/c) * (b/d)
   value = numMax / denMax
   if(value > MAX_ERROR):
-    # denMax is small enough to be 0.01% accurate or better w/o a factor
+    # denMax is small enough for MAX_ERROR or better w/o a factor
     if(MAX_UINT / value >= numMin):
       # multiply first won't overflow and limits rounding
       value *= numMin
@@ -221,14 +221,14 @@ def bigDiv2x2(
       return value
     temp = numMin / denMin
     if(temp > MAX_ERROR):
-      # denMin is small enough to be 0.01% accurate or better w/o a factor
+      # denMin is small enough for MAX_ERROR or better w/o a factor
       value *= temp
       return value
 
   factor: uint256
 
   # formula: ((a/f) * b) / d then either * f / c or / c * f
-  # factor >= a / sqrt(MAX) * b / sqrt(MAX)
+  # factor >= a / sqrt(MAX) * (b / sqrt(MAX))
   factor = numMin - 1
   factor /= MAX_BEFORE_SQUARE
   factor += 1
@@ -252,7 +252,7 @@ def bigDiv2x2(
       return value
 
   # formula: (a/f) * b / ((c*d)/f)
-  # factor >= c / sqrt(MAX) * d / sqrt(MAX)
+  # factor >= c / sqrt(MAX) * (d / sqrt(MAX))
   factor = denMin
   factor /= MAX_BEFORE_SQUARE + 1
   temp = denMax
