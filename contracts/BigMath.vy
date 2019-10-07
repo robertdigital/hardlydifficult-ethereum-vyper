@@ -195,22 +195,6 @@ def bigDiv2x2(
   if(temp > MAX_ERROR_BEFORE_DIV):
     return self._bigDiv2x1(temp, numMin, denMax)
 
-  # formula: ((a/c) * b) / d or (a/c) * (b/d)
-  value = numMax / denMax
-  if(value > MAX_ERROR):
-    # denMax is small enough for MAX_ERROR or better w/o a factor
-    if(MAX_UINT / value >= numMin):
-      # multiply first won't overflow and limits rounding
-      value *= numMin
-      value /= denMin
-      return value
-    temp = numMin / denMin
-    if(temp > MAX_ERROR):
-      # denMin is small enough for MAX_ERROR or better w/o a factor
-      # note that this error compounds with above, making the 2x2 accuracy worse than 2x1
-      value *= temp
-      return value
-
   factor: uint256
 
   # formula: ((a/f) * b) / d then either * f / c or / c * f
