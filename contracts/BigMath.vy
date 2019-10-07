@@ -219,8 +219,9 @@ def bigDiv2x2(
   # formula: (a/f) * b / ((c*d)/f)
   # factor >= c / sqrt(MAX) * (d / sqrt(MAX))
   factor = denMin
-  factor /= MAX_BEFORE_SQUARE + 1
+  factor /= MAX_BEFORE_SQUARE
   temp = denMax
+  # + 1 here prevents overflow of factor*temp
   temp /= MAX_BEFORE_SQUARE + 1
   factor *= temp
   return self._bigDiv2x1(numMax / factor, numMin, MAX_UINT)
