@@ -4,7 +4,6 @@ pull_request_rules:
       - author=renovate[bot]
       - "#status-failure=0"
       - "#label=0"
-      - "status-success=WIP"
     actions:
       label:
         add: ["auto-merge"]
@@ -14,7 +13,6 @@ pull_request_rules:
       - author=imgbot[bot]
       - "#status-failure=0"
       - "#label=0"
-      - "status-success=WIP"
     actions:
       label:
         add: ["auto-merge"]
